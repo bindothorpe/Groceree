@@ -6,7 +6,7 @@
 //
 import Foundation
 
-struct GroceryListItem: Identifiable, Codable {
+struct ShoppingListItem: Identifiable, Codable {
     let id: String
     let userId: String
     var label: String
