@@ -57,13 +57,16 @@ struct RecipesView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: {
-                        // Add your action here
+                        viewModel.showingCreateRecipe = true
                     }) {
                         Image(systemName: "plus")
                             .foregroundColor(Theme.primary)
                             .font(.system(size: 20, weight: .semibold))
                     }
                 }
+            }
+            .sheet(isPresented: $viewModel.showingCreateRecipe) {
+                CreateRecipeView()
             }
         }
         .onAppear {

@@ -10,6 +10,8 @@ class RecipesViewModel: ObservableObject {
     @Published var recipes: [Recipe] = []
     @Published var searchResults: [Recipe] = []
     @Published var searchQuery: String = ""
+    @Published var showingCreateRecipe = false
+
     
     var isSearching: Bool {
         !searchQuery.isEmpty
