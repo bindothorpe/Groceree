@@ -9,6 +9,7 @@ import SwiftUI
 
 struct RecipeCard: View {
     let recipe: Recipe
+    let onFavoriteToggle: () -> Void
     
     private var formattedDuration: String {
         let hours = recipe.duration / 60
@@ -44,10 +45,12 @@ struct RecipeCard: View {
                     }
                     
                     // Heart icon
-                    Image(systemName: "heart")
-                        .font(.system(size: 24))
-                        .foregroundColor(Theme.primary)
-                        .padding(12)
+                    Button(action: onFavoriteToggle) {
+                        Image(systemName: recipe.isFavorite ? "heart.fill" : "heart")
+                            .font(.system(size: 24))
+                            .foregroundColor(Theme.primary)
+                            .padding(12)
+                    }
                 }
                 .frame(height: 200)
                 .clipped()
@@ -71,19 +74,4 @@ struct RecipeCard: View {
             }
         }
     }
-}
-
-// Preview
-#Preview {
-    RecipeCard(
-        recipe: Recipe(
-            id: "1",
-            name: "Chili con carne",
-            imageUrl: "https://example.com/chili.jpg",
-            preparation: "Cook the meat...",
-            duration: 90, // 1h 30m
-            portionAmount: 4,
-            ingredientIds: ["1", "2", "3"]
-        )
-    )
 }

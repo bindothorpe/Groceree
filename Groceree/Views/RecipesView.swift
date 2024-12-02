@@ -20,13 +20,15 @@ struct RecipesView: View {
                 LazyVGrid(columns: columns, spacing: 16) {
                     if viewModel.isSearching {
                         ForEach(viewModel.searchResults) { recipe in
-                            RecipeCard(recipe: recipe)
-                                .frame(height: 280)
+                            RecipeCard(recipe: recipe) {
+                                viewModel.toggleFavorite(recipe)
+                            }.frame(height: 280)
                         }
                     } else {
                         ForEach(viewModel.recipes) { recipe in
-                            RecipeCard(recipe: recipe)
-                                .frame(height: 280)
+                            RecipeCard(recipe: recipe) {
+                                viewModel.toggleFavorite(recipe)
+                            }.frame(height: 280)
                         }
                     }
                 }

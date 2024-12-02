@@ -23,6 +23,12 @@ class RecipesViewModel: ObservableObject {
         }
     }
     
+    func toggleFavorite(_ recipe: Recipe) {
+        if let index = recipes.firstIndex(where: { $0.id == recipe.id }) {
+            recipes[index].isFavorite.toggle()
+        }
+    }
+    
     func fetchRecipes() {
         // Temporary sample data
         recipes = [
@@ -33,7 +39,8 @@ class RecipesViewModel: ObservableObject {
                 preparation: "Cook the meat...",
                 duration: 90,
                 portionAmount: 4,
-                ingredientIds: ["1", "2", "3"]
+                ingredientIds: ["1", "2", "3"],
+                isFavorite: false
             ),
             Recipe(
                 id: "2",
@@ -42,7 +49,8 @@ class RecipesViewModel: ObservableObject {
                 preparation: "Boil pasta...",
                 duration: 30,
                 portionAmount: 2,
-                ingredientIds: ["4", "5", "6"]
+                ingredientIds: ["4", "5", "6"],
+                isFavorite: false
             ),
             Recipe(
                 id: "3",
@@ -51,7 +59,8 @@ class RecipesViewModel: ObservableObject {
                 preparation: "Cook the meat...",
                 duration: 90,
                 portionAmount: 4,
-                ingredientIds: ["1", "2", "3"]
+                ingredientIds: ["1", "2", "3"],
+                isFavorite: false
             ),
             Recipe(
                 id: "4",
@@ -60,7 +69,8 @@ class RecipesViewModel: ObservableObject {
                 preparation: "Boil pasta...",
                 duration: 30,
                 portionAmount: 2,
-                ingredientIds: ["4", "5", "6"]
+                ingredientIds: ["4", "5", "6"],
+                isFavorite: false
             ),
             Recipe(
                 id: "5",
@@ -69,7 +79,8 @@ class RecipesViewModel: ObservableObject {
                 preparation: "Cook the meat...",
                 duration: 90,
                 portionAmount: 4,
-                ingredientIds: ["1", "2", "3"]
+                ingredientIds: ["1", "2", "3"],
+                isFavorite: false
             ),
             Recipe(
                 id: "6",
@@ -78,7 +89,8 @@ class RecipesViewModel: ObservableObject {
                 preparation: "Boil pasta...",
                 duration: 30,
                 portionAmount: 2,
-                ingredientIds: ["4", "5", "6"]
+                ingredientIds: ["4", "5", "6"],
+                isFavorite: false
             ),
             Recipe(
                 id: "7",
@@ -87,7 +99,8 @@ class RecipesViewModel: ObservableObject {
                 preparation: "Boil pasta...",
                 duration: 30,
                 portionAmount: 2,
-                ingredientIds: ["4", "5", "6"]
+                ingredientIds: ["4", "5", "6"],
+                isFavorite: false
             ),
             Recipe(
                 id: "8",
@@ -96,7 +109,8 @@ class RecipesViewModel: ObservableObject {
                 preparation: "Boil pasta...",
                 duration: 30,
                 portionAmount: 2,
-                ingredientIds: ["4", "5", "6"]
+                ingredientIds: ["4", "5", "6"],
+                isFavorite: false
             ),
             Recipe(
                 id: "9",
@@ -105,7 +119,8 @@ class RecipesViewModel: ObservableObject {
                 preparation: "Boil pasta...",
                 duration: 30,
                 portionAmount: 2,
-                ingredientIds: ["4", "5", "6"]
+                ingredientIds: ["4", "5", "6"],
+                isFavorite: false
             ),
         ]
     }

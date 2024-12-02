@@ -14,4 +14,5 @@ struct Recipe: Identifiable, Codable {
     var duration: Int64
     var portionAmount: Int
     var ingredientIds: [String]
+    var isFavorite: Bool
 }
