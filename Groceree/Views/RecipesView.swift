@@ -9,10 +9,60 @@ import SwiftUI
 struct RecipesView: View {
     @StateObject private var viewModel = RecipesViewModel()
     
+    private let columns = [
+        GridItem(.flexible(), spacing: 16),
+        GridItem(.flexible(), spacing: 16)
+    ]
+    
     var body: some View {
         NavigationStack {
-            Text("Recepten")
-                .navigationTitle(TabItem.recipes.title)
+            ScrollView {
+                LazyVGrid(columns: columns, spacing: 16) {
+                    if viewModel.isSearching {
+                        ForEach(viewModel.searchResults) { recipe in
+                            RecipeCard(recipe: recipe)
+                                .frame(height: 280)
+                        }
+                    } else {
+                        ForEach(viewModel.recipes) { recipe in
+                            RecipeCard(recipe: recipe)
+                                .frame(height: 280)
+                        }
+                    }
+                }
+                .padding()
+            }
+            .navigationTitle(TabItem.recipes.title)
+            .navigationBarTitleDisplayMode(.inline)
+            .searchable(
+                text: $viewModel.searchQuery,
+                placement: .navigationBarDrawer(displayMode: .always),
+                prompt: "Search recipes..."
+            )
+            .textInputAutocapitalization(.never)
+            .onChange(of: viewModel.searchQuery) {
+                viewModel.fetchSearchResults()
+            }
+            .overlay {
+                if viewModel.isSearching && viewModel.searchResults.isEmpty {
+                    ContentUnavailableView(
+                        "No recipes found",
+                        systemImage: "magnifyingglass",
+                        description: Text("No results for **\(viewModel.searchQuery)**")
+                    )
+                }
+            }
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(action: {
+                        // Add your action here
+                    }) {
+                        Image(systemName: "plus")
+                            .foregroundColor(Theme.primary)
+                            .font(.system(size: 20, weight: .semibold))
+                    }
+                }
+            }
         }
         .onAppear {
             viewModel.fetchRecipes()
