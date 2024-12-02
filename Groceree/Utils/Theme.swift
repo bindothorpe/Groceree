@@ -8,8 +8,11 @@
 import SwiftUI
 
 enum Theme {
-    static let primary = Color(hex: "C74200")
-    static let secondary = Color(hex: "4E62B6")
+    static let primary = Color(hex: "4E62B6")
+    static let primaryLighten = Color(hex: "87A6C6")
+    static let secondary = Color(hex: "C74200")
+    static let secondaryLighten = Color(hex: "F2CB38")
+    static let secondaryDarken = Color(hex: "CC2A1D")
     static let background = Color(hex: "FEF4F0")
     static let backgroundDarken = Color(hex: "F1E9DE")
 }

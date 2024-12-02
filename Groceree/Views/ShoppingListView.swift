@@ -32,7 +32,7 @@ struct ShoppingListView: View {
                                 viewModel.removeItem(item)
                             } label: {
                                 Label("Delete", systemImage: "trash")
-                            }
+                            }.tint(Theme.secondaryDarken)
                         }
                         .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
                         .listRowSeparator(.hidden)
@@ -67,7 +67,7 @@ struct ShoppingListView: View {
                 if !viewModel.items.isEmpty {
                     Button(action: viewModel.clearList) {
                         Text("Clear List")
-                            .foregroundColor(Theme.primary)
+                            .foregroundColor(Theme.secondaryDarken)
                             .padding()
                     }
                 }
