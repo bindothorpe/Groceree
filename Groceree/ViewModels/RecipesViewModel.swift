@@ -41,7 +41,7 @@ class RecipesViewModel: ObservableObject {
                 preparation: "Cook the meat...",
                 duration: 90,
                 portionAmount: 4,
-                ingredientIds: ["1", "2", "3"],
+                ingredientIds: ["1", "2", "3", "4", "5", "6"],
                 isFavorite: false
             ),
             Recipe(
