@@ -8,22 +8,11 @@
 import SwiftUI
 
 struct RecipeCard: View {
-    let recipe: Recipe
+    let recipe: RecipeListItem
     let onFavoriteToggle: () -> Void
     
-    private var formattedDuration: String {
-        let hours = recipe.duration / 60
-        let minutes = recipe.duration % 60
-        
-        if hours > 0 {
-            return "\(hours)h \(minutes)m"
-        } else {
-            return "\(minutes)m"
-        }
-    }
-    
     var body: some View {
-        NavigationLink(destination: RecipeDetailView(recipe: recipe)) {
+        NavigationLink(destination: RecipeDetailView(recipeId: recipe.id)) {
             ZStack {
                 // Main card background
                 RoundedRectangle(cornerRadius: 12)
@@ -33,31 +22,42 @@ struct RecipeCard: View {
                 VStack(spacing: 0) {
                     // Recipe image with heart overlay
                     ZStack(alignment: .topTrailing) {
-                        AsyncImage(url: URL(string: recipe.imageUrl)) { image in
-                            image
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                        } placeholder: {
+                        if let imageUrl = recipe.imageUrl {
+                            AsyncImage(url: URL(string: imageUrl)) { image in
+                                image
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: UIScreen.main.bounds.width / 2 - 24, height: 200)
+                            } placeholder: {
+                                Rectangle()
+                                    .fill(Color.gray.opacity(0.2))
+                                    .frame(height: 200)
+                            }
+                        } else {
                             Rectangle()
                                 .fill(Color.gray.opacity(0.2))
-                                .overlay(
-                                    ProgressView()
-                                )
+                                .frame(height: 200)
                         }
                         
                         // Heart icon
-                        Button(action: {
-                            // Prevent navigation when tapping the heart
-                            onFavoriteToggle()
-                        }) {
-                            Image(systemName: recipe.isFavorite ? "heart.fill" : "heart")
+                        Button(action: onFavoriteToggle) {
+                            Image(systemName: "heart")
                                 .font(.system(size: 24))
                                 .foregroundColor(Theme.primary)
                                 .padding(12)
                         }
                     }
                     .frame(height: 200)
-                    .clipped()
+                    .clipShape(
+                        UnevenRoundedRectangle(
+                            cornerRadii: RectangleCornerRadii(
+                                topLeading: 12,
+                                bottomLeading: 0,
+                                bottomTrailing: 0,
+                                topTrailing: 12
+                            )
+                        )
+                    )
                     
                     // Recipe info container
                     HStack {
@@ -67,7 +67,7 @@ struct RecipeCard: View {
                                 .font(.system(size: 24, weight: .bold))
                                 .lineLimit(1)
                             
-                            Text(formattedDuration)
+                            Text(recipe.formattedDuration)
                                 .font(.system(size: 16))
                                 .foregroundColor(.gray)
                         }
@@ -78,25 +78,5 @@ struct RecipeCard: View {
                 }
             }
         }
-        // This prevents the NavigationLink from showing the blue color when tapped
-        .buttonStyle(PlainButtonStyle())
     }
-}
-
-// Preview provider for SwiftUI canvas
-#Preview {
-    RecipeCard(
-        recipe: Recipe(
-            id: "1",
-            name: "Pasta Carbonara",
-            imageUrl: "https://example.com/carbonara.jpg",
-            preparation: "Cook pasta...",
-            duration: 30,
-            portionAmount: 2,
-            ingredientIds: ["1", "2", "3"],
-            isFavorite: false
-        ),
-        onFavoriteToggle: {}
-    )
-    .frame(width: 300, height: 280)
 }

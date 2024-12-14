@@ -7,29 +7,33 @@
 import SwiftUI
 
 struct RecipesView: View {
-    @StateObject private var viewModel = RecipesViewModel()
+    @EnvironmentObject private var environment: APIEnvironment
+    
+    var body: some View {
+        RecipesViewContent(api: environment.api)
+    }
+}
+private struct RecipesViewContent: View {
+    @StateObject private var viewModel: RecipesViewModel
     
     private let columns = [
         GridItem(.flexible(), spacing: 16),
         GridItem(.flexible(), spacing: 16)
     ]
     
+    init(api: GrocereeAPIProtocol) {
+        // Initialize viewModel with the passed API
+        _viewModel = StateObject(wrappedValue: RecipesViewModel(api: api))
+    }
+    
     var body: some View {
         NavigationStack {
             ScrollView {
                 LazyVGrid(columns: columns, spacing: 16) {
-                    if viewModel.isSearching {
-                        ForEach(viewModel.searchResults) { recipe in
-                            RecipeCard(recipe: recipe) {
-                                viewModel.toggleFavorite(recipe)
-                            }.frame(height: 280)
-                        }
-                    } else {
-                        ForEach(viewModel.recipes) { recipe in
-                            RecipeCard(recipe: recipe) {
-                                viewModel.toggleFavorite(recipe)
-                            }.frame(height: 280)
-                        }
+                    ForEach(viewModel.recipes, id: \.id) { recipe in
+                        RecipeCard(recipe: recipe) {
+                            // Toggle favorite functionality will come later
+                        }.frame(height: 280)
                     }
                 }
                 .padding()
@@ -42,18 +46,6 @@ struct RecipesView: View {
                 prompt: "Search recipes..."
             )
             .textInputAutocapitalization(.never)
-            .onChange(of: viewModel.searchQuery) {
-                viewModel.fetchSearchResults()
-            }
-            .overlay {
-                if viewModel.isSearching && viewModel.searchResults.isEmpty {
-                    ContentUnavailableView(
-                        "No recipes found",
-                        systemImage: "magnifyingglass",
-                        description: Text("No results for **\(viewModel.searchQuery)**")
-                    )
-                }
-            }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: {

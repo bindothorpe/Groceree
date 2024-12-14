@@ -9,9 +9,17 @@ import SwiftUI
 
 @main
 struct GrocereeApp: App {
+    @StateObject private var environment: APIEnvironment
+    
+    init() {
+        let api = MockGrocereeAPI()
+        _environment = StateObject(wrappedValue: APIEnvironment(api: api))
+    }
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(environment)
         }
     }
 }

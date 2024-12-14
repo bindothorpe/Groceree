@@ -6,13 +6,25 @@
 //
 import Foundation
 
-struct Recipe: Identifiable, Codable {
-    let id: String
+struct Recipe: Identifiable {
+    let id: Int
     var name: String
     var imageUrl: String
-    var preparation: String
-    var duration: Int64
-    var portionAmount: Int
-    var ingredientIds: [String]
+    var duration: Int
+    var servings: Int
     var isFavorite: Bool
+    var ingredients: [Ingredient]
+    var instructions: [Instruction]
+    
+    var formattedDuration: String {
+        let hours = duration / 60
+        let minutes = duration % 60
+        
+        if hours > 0 {
+            return "\(hours)h \(minutes)m"
+        } else {
+            return "\(minutes)m"
+        }
+    }
 }
+

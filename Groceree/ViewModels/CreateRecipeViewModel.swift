@@ -16,7 +16,7 @@ class CreateRecipeViewModel: ObservableObject {
     
     func addIngredient() {
         ingredients.append(Ingredient(
-            id: UUID().uuidString,
+            id: 1,
             name: "",
             amount: ""
         ))

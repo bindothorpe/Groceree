@@ -6,8 +6,8 @@
 //
 import Foundation
 
-struct Ingredient: Identifiable, Codable {
-    let id: String
+struct Ingredient: Identifiable {
+    let id: Int
     var name: String
     var amount: String
 }

@@ -15,5 +15,9 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
+    let mockApi = MockGrocereeAPI()
+    let environment = APIEnvironment(api: mockApi)
+    
+    return ContentView()
+        .environmentObject(environment)
 }
