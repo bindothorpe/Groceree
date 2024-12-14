@@ -19,15 +19,15 @@ struct RecipesView: View {
             ScrollView {
                 LazyVGrid(columns: columns, spacing: 16) {
                     if viewModel.isSearching {
-                        ForEach(viewModel.searchResults) { recipe in
-                            RecipeCard(recipe: recipe) {
-                                viewModel.toggleFavorite(recipe)
+                        ForEach(viewModel.searchResults) { recipeListItem in
+                            RecipeCard(recipeListItem: recipeListItem) {
+                                viewModel.toggleFavorite(recipeListItem)
                             }.frame(height: 280)
                         }
                     } else {
-                        ForEach(viewModel.recipes) { recipe in
-                            RecipeCard(recipe: recipe) {
-                                viewModel.toggleFavorite(recipe)
+                        ForEach(viewModel.recipeListItems) { recipeListItem in
+                            RecipeCard(recipeListItem: recipeListItem) {
+                                viewModel.toggleFavorite(recipeListItem)
                             }.frame(height: 280)
                         }
                     }

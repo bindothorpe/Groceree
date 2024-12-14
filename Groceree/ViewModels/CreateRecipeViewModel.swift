@@ -15,11 +15,12 @@ class CreateRecipeViewModel: ObservableObject {
     @Published var preparation: String = ""
     
     func addIngredient() {
-        ingredients.append(Ingredient(
-            id: UUID().uuidString,
-            name: "",
-            amount: ""
-        ))
+        //TODO: Make this work with the new models
+//        ingredients.append(Ingredient(
+//            id: UUID().uuidString,
+//            name: "",
+//            amount: ""
+//        ))
     }
     
     var isValid: Bool {

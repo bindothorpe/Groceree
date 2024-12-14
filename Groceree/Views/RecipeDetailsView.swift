@@ -11,8 +11,8 @@ struct RecipeDetailView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel: RecipeDetailViewModel
     
-    init(recipe: Recipe) {
-        _viewModel = StateObject(wrappedValue: RecipeDetailViewModel(recipe: recipe))
+    init(recipeId: Int) {
+        _viewModel = StateObject(wrappedValue: RecipeDetailViewModel(recipeId: recipeId))
     }
     
     var body: some View {
@@ -21,7 +21,7 @@ struct RecipeDetailView: View {
                     // Image and author section
                     VStack(alignment: .leading, spacing: 0) {
                         recipeImage
-                        Text("Geschreven door Autheur")
+                        Text("Geschreven door \(viewModel.recipe.author.firstName)")
                             .foregroundColor(.gray)
                             .padding()
                     }
@@ -50,11 +50,6 @@ struct RecipeDetailView: View {
                                 .foregroundColor(Theme.primary)
                         }
                         
-                        Button(action: viewModel.addToBookmarks) {
-                            Image(systemName: "bookmark")
-                                .foregroundColor(Theme.primary)
-                        }
-                        
                         Button(action: { viewModel.showingActionSheet = true }) {
                             Image(systemName: "ellipsis")
                                 .foregroundColor(Theme.primary)
@@ -62,6 +57,12 @@ struct RecipeDetailView: View {
                     }
                 }
             }
+            .confirmationDialog(
+                    "Recipe Options",
+                    isPresented: $viewModel.showingActionSheet
+                ) {
+                    actionSheetButtons
+                }
                 
         }
     
@@ -95,14 +96,14 @@ struct RecipeDetailView: View {
                     HStack {
                         Text("Porties")
                         Spacer()
-                        Text("\(viewModel.recipe.portionAmount)")
+                        Text("\(viewModel.recipe.servings)")
                             .foregroundColor(.gray)
                     }
                     
                     HStack {
                         Text("Duratie")
                         Spacer()
-                        Text(viewModel.formattedDuration)
+                        Text(viewModel.recipe.formattedDuration())
                             .foregroundColor(.gray)
                     }
                 }
@@ -118,31 +119,77 @@ struct RecipeDetailView: View {
     }
     
     private var ingredientsInformation: some View {
-            VStack(alignment: .leading, spacing: 16){
-                Text("INGREDIENTEN")
-                    .foregroundColor(.gray)
-                    .font(.system(size: 14))
-                    .padding(.horizontal)
-                VStack(alignment: .leading, spacing: 16) {
-                    
-                    ForEach(viewModel.recipe.ingredientIds, id: \.self) { ingredientId in
-                        HStack(alignment: .center, spacing: 0) {
-                            Text("Sample ingredient")
-                            Spacer()
-                            Text("Amount")
-                        }
-                        .padding(.vertical, 4)
-                    }
-                }
-                .padding()
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .background(
-                    RoundedRectangle(cornerRadius: 8)
-                        .fill(Color.white)
-                        .shadow(radius: 4)
-                )
+        VStack(alignment: .leading, spacing: 16){
+            Text("INGREDIENTEN")
+                .foregroundColor(.gray)
+                .font(.system(size: 14))
                 .padding(.horizontal)
+            
+            VStack(alignment: .leading, spacing: 16) {
+                ForEach(viewModel.recipe.ingredients, id: \.self) { ingredient in
+                    HStack(alignment: .center, spacing: 8) {
+                        Text(ingredient.name)
+                        Spacer()
+                        Text("\(ingredient.amount)").foregroundColor(.gray)
+                        Text(ingredient.unit.displayName).foregroundColor(.gray)
+                    }
+                    .padding(.vertical, 4)
+                }
+                
+                Divider()
+                
+                Button(action: {
+                    viewModel.selectedServings = viewModel.recipe.servings // Reset to default
+                    viewModel.showingServingsSheet = true
+                }) {
+                    Text("Toevoegen aan winkellijstje")
+                        .foregroundColor(Theme.primary)
+                }
+                .frame(maxWidth: .infinity, alignment: .center)
+                .sheet(isPresented: $viewModel.showingServingsSheet) {
+                    NavigationStack {
+                        Form {
+                            Stepper(
+                                value: $viewModel.selectedServings,
+                                in: 1...20
+                            ) {
+                                HStack {
+                                    Text("Aantal porties")
+                                    Spacer()
+                                    Text("\(viewModel.selectedServings)")
+                                        .foregroundColor(.gray)
+                                }
+                            }
+                        }
+                        .navigationTitle("Aantal porties")
+                        .navigationBarTitleDisplayMode(.inline)
+                        .toolbar {
+                            ToolbarItem(placement: .cancellationAction) {
+                                Button("Annuleer") {
+                                    viewModel.showingServingsSheet = false
+                                }
+                            }
+                            
+                            ToolbarItem(placement: .confirmationAction) {
+                                Button("Voeg toe") {
+                                    viewModel.addToShoppingList()
+                                    viewModel.showingServingsSheet = false
+                                }
+                            }
+                        }
+                    }
+                    .presentationDetents([.height(180)])
+                }
             }
+            .padding()
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(Color.white)
+                    .shadow(radius: 4)
+            )
+            .padding(.horizontal)
+        }
     }
     
     private var preperationInformation: some View {
@@ -152,7 +199,13 @@ struct RecipeDetailView: View {
                 .font(.system(size: 14))
                 .padding(.horizontal)
             VStack(alignment: .leading, spacing: 16) {
-                Text(viewModel.recipe.preparation)
+                
+                ForEach(viewModel.recipe.instructions, id: \.self) { instruction in
+                    HStack(alignment: .top, spacing: 8) {
+                        Text("\(instruction.step).")
+                        Text(instruction.instruction)
+                    }
+                }
             }
             .padding()
             .frame(maxWidth: .infinity, alignment: .leading)

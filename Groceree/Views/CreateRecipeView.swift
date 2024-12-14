@@ -74,16 +74,17 @@ struct CreateRecipeView: View {
                 
                 // INGREDIENTEN section
                 Section("INGREDIENTEN") {
-                    ForEach($viewModel.ingredients) { $ingredient in
-                        HStack {
-                            TextField("Ingredient", text: $ingredient.name)
-                            TextField("Amount", text: $ingredient.amount)
-                                .frame(width: 100)
-                        }
-                    }
-                    .onDelete { indexSet in
-                        viewModel.ingredients.remove(atOffsets: indexSet)
-                    }
+                    //TODO: Make this work with the new models
+//                    ForEach($viewModel.ingredients) { $ingredient in
+//                        HStack {
+//                            TextField("Ingredient", text: $ingredient.name)
+//                            TextField("Amount", text: $ingredient.amount)
+//                                .frame(width: 100)
+//                        }
+//                    }
+//                    .onDelete { indexSet in
+//                        viewModel.ingredients.remove(atOffsets: indexSet)
+//                    }
                     
                     Button("Nieuw ingredient") {
                         viewModel.addIngredient()

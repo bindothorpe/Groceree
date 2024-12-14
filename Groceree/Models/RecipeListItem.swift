@@ -1,20 +1,17 @@
 //
-//  Recipe.swift
+//  RecipeListItem.swift
 //  Groceree
 //
-//  Created by Bindo Thorpe on 18/11/2024.
+//  Created by Bindo Thorpe on 14/12/2024.
 //
+
 import Foundation
 
-struct Recipe: Identifiable {
+struct RecipeListItem: Identifiable {
     let id: Int
-    var author: Author
     var name: String
     var imageUrl: String
     var duration: Int
-    var servings: Int
-    var ingredients: [Ingredient]
-    var instructions: [Instruction]
     var isFavorite: Bool
     
     func formattedDuration() -> String {
