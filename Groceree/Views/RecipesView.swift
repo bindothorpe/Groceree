@@ -20,15 +20,21 @@ struct RecipesView: View {
                 LazyVGrid(columns: columns, spacing: 16) {
                     if viewModel.isSearching {
                         ForEach(viewModel.searchResults) { recipeListItem in
-                            RecipeCard(recipeListItem: recipeListItem) {
-                                viewModel.toggleFavorite(recipeListItem)
-                            }.frame(height: 280)
+                            RecipeCard(
+                                recipeListItem: recipeListItem,
+                                onFavoriteToggle: {
+                                    viewModel.toggleFavorite(recipeListItem)
+                                }
+                            ).frame(height: 280)
                         }
                     } else {
                         ForEach(viewModel.recipeListItems) { recipeListItem in
-                            RecipeCard(recipeListItem: recipeListItem) {
-                                viewModel.toggleFavorite(recipeListItem)
-                            }.frame(height: 280)
+                            RecipeCard(
+                                recipeListItem: recipeListItem,
+                                onFavoriteToggle: {
+                                    viewModel.toggleFavorite(recipeListItem)
+                                }
+                            ).frame(height: 280)
                         }
                     }
                 }
@@ -42,9 +48,6 @@ struct RecipesView: View {
                 prompt: "Search recipes..."
             )
             .textInputAutocapitalization(.never)
-            .onChange(of: viewModel.searchQuery) {
-                viewModel.fetchSearchResults()
-            }
             .overlay {
                 if viewModel.isSearching && viewModel.searchResults.isEmpty {
                     ContentUnavailableView(
@@ -69,8 +72,8 @@ struct RecipesView: View {
                 CreateRecipeView()
             }
         }
-        .onAppear {
-            viewModel.fetchRecipes()
+        .task {
+            await viewModel.fetchRecipes()
         }
     }
 }
