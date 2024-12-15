@@ -5,7 +5,7 @@
 //  Created by Bindo Thorpe on 14/12/2024.
 //
 
-enum MeasurementUnit: String, Codable {
+enum MeasurementUnit: String, Codable, CaseIterable {
     case grams = "g"
     case kilograms = "kg"
     case milliliters = "ml"
