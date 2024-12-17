@@ -17,19 +17,22 @@ class RecipeDetailViewModel: ObservableObject {
     @Published var error: String?
     
     private let repository: RecipeRepositoryProtocol
-    
-    init(
-        recipeId: Int,
-        repository: RecipeRepositoryProtocol = ServiceContainer.shared.recipeRepository
-    ) {
-        self.recipeId = recipeId
-        self.repository = repository
-        self.selectedServings = 2 // Default value until recipe is loaded
+        private let shoppingListRepository: ShoppingListRepositoryProtocol
         
-        Task {
-            await fetchRecipe()
+        init(
+            recipeId: Int,
+            repository: RecipeRepositoryProtocol = ServiceContainer.shared.recipeRepository,
+            shoppingListRepository: ShoppingListRepositoryProtocol = ServiceContainer.shared.shoppingListRepository
+        ) {
+            self.recipeId = recipeId
+            self.repository = repository
+            self.shoppingListRepository = shoppingListRepository
+            self.selectedServings = 2
+            
+            Task {
+                await fetchRecipe()
+            }
         }
-    }
     
     @MainActor
     func fetchRecipe() async {
@@ -62,16 +65,19 @@ class RecipeDetailViewModel: ObservableObject {
         }
     }
     
-    func addToShoppingList() {
-        Task {
-            do {
-                try await repository.addToShoppingList(recipeId: recipeId, servings: selectedServings)
-                // You might want to show a success message or handle the success case
-            } catch {
-                self.error = error.localizedDescription
+    @MainActor
+        func addToShoppingList() {
+            Task {
+                do {
+                    try await shoppingListRepository.addRecipeIngredients(
+                        recipeId: recipeId,
+                        servings: selectedServings
+                    )
+                } catch {
+                    self.error = error.localizedDescription
+                }
             }
         }
-    }
     
     func addToBookmarks() {
         // TODO: Implement bookmark functionality

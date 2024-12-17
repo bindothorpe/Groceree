@@ -9,39 +9,81 @@ import SwiftUI
 class ShoppingListViewModel: ObservableObject {
     @Published var items: [ShoppingListItem] = []
     @Published var newItemText: String = ""
+    @Published var isLoading = false
+    @Published var error: String?
     
-    func fetchItems() {
-        // Temporary sample data
-        items = [
-            ShoppingListItem(id: "1", userId: "user1", label: "500 gr Pasta", isChecked: true),
-            ShoppingListItem(id: "2", userId: "user1", label: "2 Eieren", isChecked: false),
-            ShoppingListItem(id: "3", userId: "user1", label: "Zout", isChecked: false)
-        ]
+    private let repository: ShoppingListRepositoryProtocol
+    
+    init(repository: ShoppingListRepositoryProtocol = ServiceContainer.shared.shoppingListRepository) {
+        self.repository = repository
     }
     
-    func toggleItem(_ item: ShoppingListItem) {
-        if let index = items.firstIndex(where: { $0.id == item.id }) {
-            items[index].isChecked.toggle()
+    @MainActor
+    func fetchItems() {
+        Task {
+            isLoading = true
+            error = nil
+            
+            do {
+                items = try await repository.fetchShoppingListItems()
+            } catch {
+                self.error = error.localizedDescription
+            }
+            
+            isLoading = false
         }
     }
     
+    @MainActor
+    func toggleItem(_ item: ShoppingListItem) {
+        Task {
+            do {
+                try await repository.toggleItem(id: item.id)
+                if let index = items.firstIndex(where: { $0.id == item.id }) {
+                    items[index].isChecked.toggle()
+                }
+            } catch {
+                self.error = error.localizedDescription
+            }
+        }
+    }
+    
+    @MainActor
     func addItem() {
         guard !newItemText.isEmpty else { return }
-        let newItem = ShoppingListItem(
-            id: UUID().uuidString,
-            userId: "user1",
-            label: newItemText,
-            isChecked: false
-        )
-        items.append(newItem)
-        newItemText = ""
+        
+        Task {
+            do {
+                let newItem = try await repository.addItem(newItemText)
+                items.append(newItem)
+                newItemText = ""
+            } catch {
+                self.error = error.localizedDescription
+            }
+        }
     }
     
+    @MainActor
     func clearList() {
-        items.removeAll()
+        Task {
+            do {
+                try await repository.clearList()
+                items.removeAll()
+            } catch {
+                self.error = error.localizedDescription
+            }
+        }
     }
     
+    @MainActor
     func removeItem(_ item: ShoppingListItem) {
-        items.removeAll { $0.id == item.id }
+        Task {
+            do {
+                try await repository.deleteItem(id: item.id)
+                items.removeAll { $0.id == item.id }
+            } catch {
+                self.error = error.localizedDescription
+            }
+        }
     }
 }
