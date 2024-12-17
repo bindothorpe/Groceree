@@ -11,8 +11,10 @@ class ServiceContainer {
     static let shared = ServiceContainer()
     
     let recipeRepository: RecipeRepositoryProtocol
+    let shoppingListRepository: ShoppingListRepositoryProtocol
     
     private init() {
         self.recipeRepository = MockRecipeRepository()
+        self.shoppingListRepository = MockShoppingListRepository(recipeRepository: self.recipeRepository)
     }
 }
