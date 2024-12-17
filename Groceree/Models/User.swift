@@ -9,9 +9,8 @@ import Foundation
 
 struct User: Identifiable, Codable {
     let id: String
-    var username: String
-    var avatarUrl: String
+    var firstName: String
+    var lastName: String
+    var imageUrl: String
     var bio: String
-    var recipeIds: [String]
-    var likedRecipeIds: [String]
 }

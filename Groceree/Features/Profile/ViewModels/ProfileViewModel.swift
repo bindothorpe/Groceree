@@ -13,11 +13,10 @@ class ProfileViewModel: ObservableObject {
             // Simulate fetching user data
             userData = User(
                 id: "1",
-                username: "TestUser",
-                avatarUrl: "placeholder",
-                bio: "Hello, I'm using Groceree!",
-                recipeIds: [],
-                likedRecipeIds: []
+                firstName: "Bindo",
+                lastName: "Thorpe",
+                imageUrl: "placeholder",
+                bio: "Hello, I'm using Groceree!"
             )
         }
 }
