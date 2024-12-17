@@ -22,65 +22,90 @@ struct RecipeIngredientsView: View {
                 .padding(.horizontal)
             
             VStack(alignment: .leading, spacing: 16) {
+                // Ingredients list
                 ForEach(ingredients, id: \.self) { ingredient in
                     HStack(alignment: .center, spacing: 8) {
                         Text(ingredient.name)
                         Spacer()
-                        Text("\(ingredient.amount)").foregroundColor(.gray)
-                        Text(ingredient.unit.rawValue).foregroundColor(.gray)
+                        Text("\(ingredient.amount)")
+                            .foregroundColor(.gray)
+                        Text(ingredient.unit.rawValue)
+                            .foregroundColor(.gray)
                     }
                     .padding(.vertical, 4)
                 }
                 
                 Divider()
                 
-                if isAddingToList {
-                    // Expanded view with serving selection
-                    VStack(spacing: 16) {
-                        Stepper(
-                            value: $selectedServings,
-                            in: 1...20
-                        ) {
-                            HStack {
-                                Text("Aantal porties")
-                                Spacer()
-                                Text("\(selectedServings)")
-                                    .foregroundColor(.gray)
-                            }
-                        }
-                        
-                        HStack(spacing: 0) {
-                            Button(action: {
-                                isAddingToList = false
-                            }) {
-                                Text("Annuleer")
-                                    .foregroundColor(.gray)
-                                    .frame(maxWidth: .infinity)
+                // Add to list section
+                VStack(spacing: 0) {
+                    if isAddingToList {
+                        VStack(spacing: 16) {
+                            // Stepper
+                            Stepper(value: $selectedServings, in: 1...20) {
+                                HStack {
+                                    Text("Aantal porties")
+                                    Spacer()
+                                    Text("\(selectedServings)")
+                                        .foregroundColor(.gray)
+                                }
                             }
                             
-                            Divider()
-                                .frame(height: 20)
-                            
-                            Button(action: {
-                                onAddToShoppingList()
-                                isAddingToList = false
-                            }) {
-                                Text("Toevoegen")
-                                    .foregroundColor(Theme.primary)
-                                    .frame(maxWidth: .infinity)
+                            // Action buttons
+                            HStack(spacing: 0) {
+                                Button(action: {
+                                    withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                                        isAddingToList = false
+                                    }
+                                }) {
+                                    Text("Annuleer")
+                                        .frame(maxWidth: .infinity)
+                                        .foregroundColor(.gray)
+                                }
+                                .background(Color.white)
+                                
+                                Divider()
+                                    .frame(height: 44)
+                                
+                                Button(action: {
+                                    onAddToShoppingList()
+                                    withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                                        isAddingToList = false
+                                    }
+                                }) {
+                                    Text("Toevoegen")
+                                        .frame(maxWidth: .infinity)
+                                        .foregroundColor(Theme.primary)
+                                }
+                                .background(Color.white)
                             }
                         }
+                        .padding()
+                        .background(Color.white)
+                        .cornerRadius(8)
+                        .transition(.asymmetric(
+                            insertion: .scale(scale: 0.95).combined(with: .opacity),
+                            removal: .scale(scale: 0.95).combined(with: .opacity)
+                        ))
+                    } else {
+                        Button(action: {
+                            selectedServings = defaultServings
+                            withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                                isAddingToList = true
+                            }
+                        }) {
+                            Text("Toevoegen aan winkellijstje")
+                                .foregroundColor(Theme.primary)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(Color.white)
+                                .cornerRadius(8)
+                        }
+                        .transition(.asymmetric(
+                            insertion: .scale(scale: 0.95).combined(with: .opacity),
+                            removal: .scale(scale: 0.95).combined(with: .opacity)
+                        ))
                     }
-                } else {
-                    // Collapsed view with just the button
-                    Button(action: {
-                        selectedServings = defaultServings // Reset to default
-                        isAddingToList = true
-                    }) {
-                        Text("Toevoegen aan winkellijstje")
-                            .foregroundColor(Theme.primary)
-                    }
-                    .frame(maxWidth: .infinity, alignment: .center)
                 }
             }
             .padding()
@@ -91,7 +116,6 @@ struct RecipeIngredientsView: View {
                     .shadow(radius: 4)
             )
             .padding(.horizontal)
-            .animation(.spring(), value: isAddingToList)
         }
     }
 }
