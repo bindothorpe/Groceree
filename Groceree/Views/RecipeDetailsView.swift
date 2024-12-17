@@ -36,7 +36,6 @@ struct RecipeDetailView: View {
                             RecipeIngredientsView(
                                 ingredients: recipe.ingredients,
                                 defaultServings: recipe.servings,
-                                showingServingsSheet: $viewModel.showingServingsSheet,
                                 selectedServings: $viewModel.selectedServings,
                                 onAddToShoppingList: viewModel.addToShoppingList
                             )
@@ -45,6 +44,19 @@ struct RecipeDetailView: View {
                                 instructions: recipe.instructions
                             )
                         }
+                    }
+                }
+                .overlay(alignment: .bottom) {
+                    if viewModel.showingSuccessMessage {
+                        Text("Added to shopping list")
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 12)
+                            .background(Theme.primary)
+                            .clipShape(Capsule())
+                            .padding(.bottom, 32)
+                            .transition(.move(edge: .bottom).combined(with: .opacity))
+                            .animation(.spring(), value: viewModel.showingSuccessMessage)
                     }
                 }
                 .navigationBarTitleDisplayMode(.large)
@@ -71,16 +83,8 @@ struct RecipeDetailView: View {
                     Button("Markeer als favoriet", action: viewModel.toggleFavorite)
                     Button("Recept bewaren", action: viewModel.addToBookmarks)
                     Button("Toevoegen aan folder", action: viewModel.addToFolder)
-                    Button("Toevoegen aan winkellijst", action: viewModel.addToShoppingList)
                     Button("Wijzig", action: viewModel.editRecipe)
                     Button("Cancel", role: .cancel) { }
-                }
-                .sheet(isPresented: $viewModel.showingServingsSheet) {
-                    ServingsSheetView(
-                        selectedServings: $viewModel.selectedServings,
-                        isPresented: $viewModel.showingServingsSheet,
-                        onConfirm: viewModel.addToShoppingList
-                    )
                 }
             } else if let error = viewModel.error {
                 ContentUnavailableView(

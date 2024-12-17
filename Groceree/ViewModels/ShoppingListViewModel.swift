@@ -9,81 +9,37 @@ import SwiftUI
 class ShoppingListViewModel: ObservableObject {
     @Published var items: [ShoppingListItem] = []
     @Published var newItemText: String = ""
-    @Published var isLoading = false
-    @Published var error: String?
     
     private let repository: ShoppingListRepositoryProtocol
     
     init(repository: ShoppingListRepositoryProtocol = ServiceContainer.shared.shoppingListRepository) {
         self.repository = repository
+        fetchItems()
     }
     
-    @MainActor
     func fetchItems() {
-        Task {
-            isLoading = true
-            error = nil
-            
-            do {
-                items = try await repository.fetchShoppingListItems()
-            } catch {
-                self.error = error.localizedDescription
-            }
-            
-            isLoading = false
-        }
+        items = repository.fetchShoppingListItems()
     }
     
-    @MainActor
     func toggleItem(_ item: ShoppingListItem) {
-        Task {
-            do {
-                try await repository.toggleItem(id: item.id)
-                if let index = items.firstIndex(where: { $0.id == item.id }) {
-                    items[index].isChecked.toggle()
-                }
-            } catch {
-                self.error = error.localizedDescription
-            }
-        }
+        repository.toggleItem(id: item.id)
+        fetchItems() // Refresh the list after toggling
     }
     
-    @MainActor
     func addItem() {
         guard !newItemText.isEmpty else { return }
-        
-        Task {
-            do {
-                let newItem = try await repository.addItem(newItemText)
-                items.append(newItem)
-                newItemText = ""
-            } catch {
-                self.error = error.localizedDescription
-            }
-        }
+        _ = repository.addItem(newItemText)
+        newItemText = ""
+        fetchItems() // Refresh the list after adding
     }
     
-    @MainActor
     func clearList() {
-        Task {
-            do {
-                try await repository.clearList()
-                items.removeAll()
-            } catch {
-                self.error = error.localizedDescription
-            }
-        }
+        repository.clearList()
+        fetchItems() // Refresh the list after clearing
     }
     
-    @MainActor
     func removeItem(_ item: ShoppingListItem) {
-        Task {
-            do {
-                try await repository.deleteItem(id: item.id)
-                items.removeAll { $0.id == item.id }
-            } catch {
-                self.error = error.localizedDescription
-            }
-        }
+        repository.deleteItem(id: item.id)
+        fetchItems() // Refresh the list after removing
     }
 }

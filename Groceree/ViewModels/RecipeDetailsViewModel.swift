@@ -15,24 +15,25 @@ class RecipeDetailViewModel: ObservableObject {
     @Published var selectedServings: Int
     @Published var isLoading = false
     @Published var error: String?
+    @Published var showingSuccessMessage = false
     
-    private let repository: RecipeRepositoryProtocol
-        private let shoppingListRepository: ShoppingListRepositoryProtocol
+    private let recipeRepository: RecipeRepositoryProtocol
+    private let shoppingListRepository: ShoppingListRepositoryProtocol
+    
+    init(
+        recipeId: Int,
+        recipeRepository: RecipeRepositoryProtocol = ServiceContainer.shared.recipeRepository,
+        shoppingListRepository: ShoppingListRepositoryProtocol = ServiceContainer.shared.shoppingListRepository
+    ) {
+        self.recipeId = recipeId
+        self.recipeRepository = recipeRepository
+        self.shoppingListRepository = shoppingListRepository
+        self.selectedServings = 2 // Default value until recipe is loaded
         
-        init(
-            recipeId: Int,
-            repository: RecipeRepositoryProtocol = ServiceContainer.shared.recipeRepository,
-            shoppingListRepository: ShoppingListRepositoryProtocol = ServiceContainer.shared.shoppingListRepository
-        ) {
-            self.recipeId = recipeId
-            self.repository = repository
-            self.shoppingListRepository = shoppingListRepository
-            self.selectedServings = 2
-            
-            Task {
-                await fetchRecipe()
-            }
+        Task {
+            await fetchRecipe()
         }
+    }
     
     @MainActor
     func fetchRecipe() async {
@@ -40,7 +41,7 @@ class RecipeDetailViewModel: ObservableObject {
         error = nil
         
         do {
-            recipe = try await repository.fetchRecipe(id: recipeId)
+            recipe = try await recipeRepository.fetchRecipe(id: recipeId)
             if let recipe {
                 selectedServings = recipe.servings
             }
@@ -55,7 +56,7 @@ class RecipeDetailViewModel: ObservableObject {
     func toggleFavorite() {
         Task {
             do {
-                try await repository.toggleFavorite(id: recipeId)
+                try await recipeRepository.toggleFavorite(id: recipeId)
                 if recipe != nil {
                     recipe?.isFavorite.toggle()
                 }
@@ -65,19 +66,19 @@ class RecipeDetailViewModel: ObservableObject {
         }
     }
     
-    @MainActor
-        func addToShoppingList() {
-            Task {
-                do {
-                    try await shoppingListRepository.addRecipeIngredients(
-                        recipeId: recipeId,
-                        servings: selectedServings
-                    )
-                } catch {
-                    self.error = error.localizedDescription
-                }
+    func addToShoppingList() {
+        showingServingsSheet = false
+        
+        if let recipe = recipe {
+            shoppingListRepository.addRecipeIngredients(recipe: recipe, servings: selectedServings)
+            showingSuccessMessage = true
+            
+            // Hide success message after 2 seconds
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                self.showingSuccessMessage = false
             }
         }
+    }
     
     func addToBookmarks() {
         // TODO: Implement bookmark functionality

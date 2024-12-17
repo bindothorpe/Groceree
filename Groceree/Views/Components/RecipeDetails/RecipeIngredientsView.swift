@@ -10,8 +10,8 @@ import SwiftUI
 struct RecipeIngredientsView: View {
     let ingredients: [Ingredient]
     let defaultServings: Int
-    @Binding var showingServingsSheet: Bool
     @Binding var selectedServings: Int
+    @State private var isAddingToList = false
     let onAddToShoppingList: () -> Void
     
     var body: some View {
@@ -27,21 +27,61 @@ struct RecipeIngredientsView: View {
                         Text(ingredient.name)
                         Spacer()
                         Text("\(ingredient.amount)").foregroundColor(.gray)
-                        Text(ingredient.unit.displayName).foregroundColor(.gray)
+                        Text(ingredient.unit.rawValue).foregroundColor(.gray)
                     }
                     .padding(.vertical, 4)
                 }
                 
                 Divider()
                 
-                Button(action: {
-                    selectedServings = defaultServings // Reset to default
-                    showingServingsSheet = true
-                }) {
-                    Text("Toevoegen aan winkellijstje")
-                        .foregroundColor(Theme.primary)
+                if isAddingToList {
+                    // Expanded view with serving selection
+                    VStack(spacing: 16) {
+                        Stepper(
+                            value: $selectedServings,
+                            in: 1...20
+                        ) {
+                            HStack {
+                                Text("Aantal porties")
+                                Spacer()
+                                Text("\(selectedServings)")
+                                    .foregroundColor(.gray)
+                            }
+                        }
+                        
+                        HStack(spacing: 0) {
+                            Button(action: {
+                                isAddingToList = false
+                            }) {
+                                Text("Annuleer")
+                                    .foregroundColor(.gray)
+                                    .frame(maxWidth: .infinity)
+                            }
+                            
+                            Divider()
+                                .frame(height: 20)
+                            
+                            Button(action: {
+                                onAddToShoppingList()
+                                isAddingToList = false
+                            }) {
+                                Text("Toevoegen")
+                                    .foregroundColor(Theme.primary)
+                                    .frame(maxWidth: .infinity)
+                            }
+                        }
+                    }
+                } else {
+                    // Collapsed view with just the button
+                    Button(action: {
+                        selectedServings = defaultServings // Reset to default
+                        isAddingToList = true
+                    }) {
+                        Text("Toevoegen aan winkellijstje")
+                            .foregroundColor(Theme.primary)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .center)
                 }
-                .frame(maxWidth: .infinity, alignment: .center)
             }
             .padding()
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -51,6 +91,7 @@ struct RecipeIngredientsView: View {
                     .shadow(radius: 4)
             )
             .padding(.horizontal)
+            .animation(.spring(), value: isAddingToList)
         }
     }
 }

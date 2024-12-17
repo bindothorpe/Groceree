@@ -8,10 +8,10 @@
 import Foundation
 
 protocol ShoppingListRepositoryProtocol {
-    func fetchShoppingListItems() async throws -> [ShoppingListItem]
-    func addItem(_ label: String) async throws -> ShoppingListItem
-    func toggleItem(id: String) async throws
-    func deleteItem(id: String) async throws
-    func clearList() async throws
-    func addRecipeIngredients(recipeId: Int, servings: Int) async throws
+    func fetchShoppingListItems() -> [ShoppingListItem]
+    func addItem(_ label: String) -> ShoppingListItem
+    func toggleItem(id: String)
+    func deleteItem(id: String)
+    func clearList()
+    func addRecipeIngredients(recipe: Recipe, servings: Int)
 }

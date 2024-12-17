@@ -15,6 +15,6 @@ class ServiceContainer {
     
     private init() {
         self.recipeRepository = MockRecipeRepository()
-        self.shoppingListRepository = MockShoppingListRepository(recipeRepository: self.recipeRepository)
+        self.shoppingListRepository = LocalShoppingListRepository()
     }
 }
