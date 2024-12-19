@@ -12,10 +12,8 @@ class MockRecipeRepository: RecipeRepositoryProtocol {
         Recipe(
             id: 1,
             author: Author(
-                id: 1,
-                firstName: "John",
-                lastName: "Doe",
-                imageUrl: "https://example.com/john.jpg"
+                id: "1234",
+                firstName: "John"
             ),
             name: "Pasta Carbonara",
             imageUrl: "https://example.com/carbonara.jpg",
@@ -36,10 +34,8 @@ class MockRecipeRepository: RecipeRepositoryProtocol {
         Recipe(
             id: 2,
             author: Author(
-                id: 1,
-                firstName: "John",
-                lastName: "Doe",
-                imageUrl: "https://example.com/john.jpg"
+                id: "1234",
+                firstName: "John"
             ),
             name: "Classic Burger",
             imageUrl: "https://example.com/burger.jpg",

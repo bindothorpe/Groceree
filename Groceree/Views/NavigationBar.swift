@@ -8,6 +8,7 @@ import SwiftUI
 
 struct NavigationBar: View {
     @StateObject private var viewModel = NavigationViewModel()
+    private var currentUserId = "1234"
     
     var body: some View {
         TabView(selection: $viewModel.selectedTab) {
@@ -25,7 +26,7 @@ struct NavigationBar: View {
                 }
                 .tag(TabItem.shoppingList)
             
-            ProfileView()
+            ProfileView(userId: currentUserId)
                 .tabItem {
                     Label(TabItem.profile.title,
                           systemImage: TabItem.profile.icon)

@@ -95,7 +95,7 @@ class CreateRecipeViewModel: ObservableObject {
     func createRecipe() {
         let recipe = Recipe(
             id: 1,
-            author: Author(id: 1, firstName: "Jan", lastName: "Jansens", imageUrl: ""),
+            author: Author(id: "1234", firstName: "Jan"),
             name: name,
             imageUrl: "", // This should be set after image upload
             duration: Int(hours * 60 + minutes),

@@ -12,9 +12,11 @@ class ServiceContainer {
     
     let recipeRepository: RecipeRepositoryProtocol
     let shoppingListRepository: ShoppingListRepositoryProtocol
+    let userRepository: UserRepositoryProtocol
     
     private init() {
         self.recipeRepository = MockRecipeRepository()
         self.shoppingListRepository = LocalShoppingListRepository()
+        self.userRepository = MockUserRepository()
     }
 }
