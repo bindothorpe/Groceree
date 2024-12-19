@@ -21,47 +21,73 @@ struct ProfileView: View {
             } else if let user = viewModel.user {
                 NavigationStack {
                     ScrollView {
-                        VStack(alignment: .leading, spacing: 16) {
-                            Text("PERSOONLIJKE INFORMATIE")
-                                .font(.system(size: 14))
-                                .foregroundColor(.gray)
-                                .padding(.horizontal)
+                        VStack(spacing: 24) {
+                            ProfileInfoView(user: user)
                             
-                            VStack(alignment: .leading, spacing: 24) {
-                                HStack(spacing: 16) {
-                                    AsyncImage(url: URL(string: user.imageUrl ?? "")) { image in
-                                        image
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fill)
-                                    } placeholder: {
-                                        Image(systemName: "person.circle.fill")
-                                            .resizable()
-                                            .foregroundColor(.gray.opacity(0.3))
-                                    }
-                                    .frame(width: 60, height: 60)
-                                    .clipShape(Circle())
-                                    
-                                    Text(user.firstName)
-                                        .font(.title3)
-                                    
-                                    Spacer()
+                            // Recipes Section
+                            VStack(alignment: .leading, spacing: 16) {
+                                // Tab selector
+                                Picker("", selection: $viewModel.selectedTab) {
+                                    Text("My Recipes").tag(0)
+                                    Text("My Likes").tag(1)
                                 }
+                                .pickerStyle(.segmented)
+                                .padding(.horizontal)
                                 
-                                VStack(alignment: .leading, spacing: 8) {
-                                    Text(user.bio ?? "")
-                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                // Content based on selected tab
+                                if viewModel.selectedTab == 0 {
+                                    // My Recipes tab
+                                    if viewModel.isLoadingRecipes {
+                                        ProgressView()
+                                            .frame(maxWidth: .infinity)
+                                    } else if !viewModel.recipeListItems.isEmpty {
+                                        RecipeGridView(
+                                            recipeListItems: viewModel.recipeListItems,
+                                            onFavoriteToggle: { recipe in
+                                                        viewModel.toggleFavorite(recipe)
+                                                    }
+                                        )
+                                    } else if let error = viewModel.errorRecipes {
+                                        ContentUnavailableView(
+                                            "Error",
+                                            systemImage: "exclamationmark.triangle",
+                                            description: Text(error)
+                                        )
+                                    } else {
+                                        ContentUnavailableView(
+                                            "No recipes yet",
+                                            systemImage: "rectangle.on.rectangle.slash",
+                                            description: Text("Start creating your first recipe!")
+                                        )
+                                    }
+                                } else {
+                                    // My Likes tab
+                                    if viewModel.isLoadingLikes {
+                                        ProgressView()
+                                            .frame(maxWidth: .infinity)
+                                    } else if !viewModel.likedRecipes.isEmpty {
+                                        RecipeGridView(
+                                            recipeListItems: viewModel.likedRecipes,
+                                            onFavoriteToggle: { recipe in
+                                                        viewModel.toggleFavorite(recipe)
+                                                    }
+                                        )
+                                    } else if let error = viewModel.errorLikes {
+                                        ContentUnavailableView(
+                                            "Error",
+                                            systemImage: "exclamationmark.triangle",
+                                            description: Text(error)
+                                        )
+                                    } else {
+                                        ContentUnavailableView(
+                                            "No liked recipes",
+                                            systemImage: "heart.slash",
+                                            description: Text("You haven't liked any recipes yet")
+                                        )
+                                    }
                                 }
                             }
-                            .padding()
-                            .frame(maxWidth: .infinity)
-                            .background(
-                                RoundedRectangle(cornerRadius: 12)
-                                    .fill(Color.white)
-                                    .shadow(radius: 9)
-                            )
                         }
-                        .padding(.horizontal)
-                        .frame(maxWidth: .infinity)
                     }
                     .navigationTitle(TabItem.profile.title)
                     .navigationBarTitleDisplayMode(.inline)
@@ -92,9 +118,12 @@ struct ProfileView: View {
                     systemImage: "questionmark.circle"
                 )
             }
-        }
-        .task {
+        }.task {
+            // Initial load
             await viewModel.fetchUser()
+            await viewModel.fetchRecipes()
+            await viewModel.fetchLikedRecipes()
         }
+        
     }
 }

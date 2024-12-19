@@ -9,6 +9,8 @@ import Foundation
 
 protocol RecipeRepositoryProtocol {
     func fetchRecipeListItems() async throws -> [RecipeListItem]
+    func fetchRecipesFromUser(id: String) async throws -> [RecipeListItem]
+    func fetchRecipesLikedByUser(id: String) async throws -> [RecipeListItem]
     func fetchRecipe(id: Int) async throws -> Recipe
     func createRecipe(_ recipe: Recipe) async throws -> Recipe
     func updateRecipe(_ recipe: Recipe) async throws -> Recipe
