@@ -17,8 +17,6 @@ class ServiceContainer {
     let userRepository: UserRepositoryProtocol
     let authRepository: AuthRepositoryProtocol
     
-    let authManager: AuthManager
-    
     private init() {
         self.apiClient = APIClient(baseURL: APIConstants.baseURL)
         
@@ -26,12 +24,5 @@ class ServiceContainer {
         self.recipeRepository = MockRecipeRepository()
         self.shoppingListRepository = LocalShoppingListRepository()
         self.userRepository = MockUserRepository()
-        
-        self.authManager = AuthManager(authRepository: authRepository, apiClient: apiClient)
-                
-        // Initialize auth manager on main actor
-        Task { @MainActor in
-            self.authManager.initialize()
-        }
     }
 }
