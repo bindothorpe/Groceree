@@ -13,6 +13,7 @@ class RegisterViewModel: ObservableObject {
     @Published var lastName = ""
     @Published var username = ""
     @Published var password = ""
+    @Published var confirmPassword = ""
     @Published var isLoading = false
     @Published var error: String?
     
@@ -61,6 +62,8 @@ class RegisterViewModel: ObservableObject {
         lastName.isEmpty ||
         username.isEmpty ||
         password.isEmpty ||
+        confirmPassword.isEmpty ||
+        password != confirmPassword ||
         isLoading
     }
 }

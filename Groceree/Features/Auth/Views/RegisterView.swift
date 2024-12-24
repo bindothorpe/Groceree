@@ -18,6 +18,7 @@ struct RegisterView: View {
         case lastName
         case username
         case password
+        case confirmPassword
     }
     
     var body: some View {
@@ -61,6 +62,14 @@ struct RegisterView: View {
                     SecureField("Password", text: $viewModel.password)
                         .textContentType(.newPassword)
                         .focused($focusedField, equals: .password)
+                        .submitLabel(.next)
+                        .padding()
+                        .background(Color(.systemGray6))
+                        .cornerRadius(8)
+                    
+                    SecureField("Confirm Password", text: $viewModel.confirmPassword)
+                        .textContentType(.newPassword)
+                        .focused($focusedField, equals: .confirmPassword)
                         .submitLabel(.go)
                         .padding()
                         .background(Color(.systemGray6))
@@ -109,6 +118,8 @@ struct RegisterView: View {
             case .username:
                 focusedField = .password
             case .password:
+                focusedField = .confirmPassword
+            case .confirmPassword:
                 Task {
                     await viewModel.register()
                     await authViewModel.checkAuthenticationStatus()
