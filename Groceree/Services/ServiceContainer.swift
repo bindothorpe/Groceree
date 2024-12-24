@@ -18,7 +18,7 @@ class ServiceContainer {
     let authRepository: AuthRepositoryProtocol
     
     private init() {
-        self.apiClient = APIClient(baseURL: APIConstants.baseURL)
+        self.apiClient = APIClient(baseURL: APIConstants.baseURL, baseImageUrl: APIConstants.baseImageURL)
         
         self.authRepository = AuthRepository(apiClient: apiClient)
         self.recipeRepository = MockRecipeRepository()

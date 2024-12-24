@@ -8,10 +8,12 @@ import Foundation
 
 class APIClient {
     private let baseURL: String
+    private let baseImageUrl: String
     private var authToken: String?
     
-    init(baseURL: String) {
+    init(baseURL: String, baseImageUrl: String) {
         self.baseURL = baseURL
+        self.baseImageUrl = baseImageUrl
     }
     
     func setAuthToken(_ token: String?) {
