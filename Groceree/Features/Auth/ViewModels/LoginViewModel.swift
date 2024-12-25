@@ -27,6 +27,8 @@ class LoginViewModel: ObservableObject {
         
         do {
             let _ = try await authRepository.login(username: username, password: password)
+        } catch is APIAuthError {
+            self.error = "Invalid credentials"
         } catch {
             self.error = error.localizedDescription
         }

@@ -5,6 +5,6 @@
 //  Created by Bindo Thorpe on 23/12/2024.
 //
 
-struct APIAuthError: Decodable {
+struct APIAuthError: Error {
     let error: String
 }
