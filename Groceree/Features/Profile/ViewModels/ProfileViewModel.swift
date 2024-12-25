@@ -7,7 +7,6 @@
 import SwiftUI
 
 class ProfileViewModel: ObservableObject {
-    @Published var userId: String
     @Published var user: User?
     @Published var selectedTab = 0 // 0 for My Recipes, 1 for My Likes
     
@@ -27,11 +26,9 @@ class ProfileViewModel: ObservableObject {
     private let recipeRepository: RecipeRepositoryProtocol
     
     init(
-        userId: String,
         userRepository: UserRepositoryProtocol = ServiceContainer.shared.userRepository,
         recipeRepository:RecipeRepositoryProtocol = ServiceContainer.shared.recipeRepository
     ) {
-        self.userId = userId
         self.userRepository = userRepository
         self.recipeRepository = recipeRepository
     }
@@ -42,9 +39,9 @@ class ProfileViewModel: ObservableObject {
         error = nil
         
         do {
-            user = try await userRepository.fetchUser(id: userId)
+            user = try await userRepository.fetchUser()
         } catch {
-            self.error = error.localizedDescription
+            self.error = error.localizedDescription + "test"
         }
         
         isLoading = false
@@ -56,7 +53,7 @@ class ProfileViewModel: ObservableObject {
         errorRecipes = nil
         
         do {
-            recipeListItems = try await recipeRepository.fetchRecipesFromUser(id: userId)
+//            recipeListItems = try await recipeRepository.fetchRecipesFromUser(id: userId)
         } catch {
             self.error = error.localizedDescription
         }
@@ -70,7 +67,7 @@ class ProfileViewModel: ObservableObject {
        errorLikes = nil
        
        do {
-           likedRecipes = try await recipeRepository.fetchRecipesLikedByUser(id: userId)
+//           likedRecipes = try await recipeRepository.fetchRecipesLikedByUser(id: userId)
        } catch {
            self.errorLikes = error.localizedDescription
        }

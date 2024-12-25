@@ -23,7 +23,7 @@ struct ContentView: View {
                     .environmentObject(authViewModel)
             } else {
                 // Show auth flow (login/register)
-                AuthFlow()
+                LoginView()
                     .environmentObject(authViewModel)
             }
         }

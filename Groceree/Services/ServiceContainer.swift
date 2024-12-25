@@ -23,6 +23,7 @@ class ServiceContainer {
         self.authRepository = AuthRepository(apiClient: apiClient)
         self.recipeRepository = MockRecipeRepository()
         self.shoppingListRepository = LocalShoppingListRepository()
-        self.userRepository = MockUserRepository()
+        self.userRepository = UserRepository(apiClient: apiClient)
+//        self.userRepository = MockUserRepository()
     }
 }

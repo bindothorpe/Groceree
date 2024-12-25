@@ -16,10 +16,6 @@ class APIClient {
         self.baseImageUrl = baseImageUrl
     }
     
-    func setAuthToken(_ token: String?) {
-        self.authToken = token
-    }
-    
     func fetch<T: Decodable>(
         _ path: String,
         method: String = "GET",
@@ -32,6 +28,16 @@ class APIClient {
         var request = URLRequest(url: url)
         request.httpMethod = method
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        do {
+            
+            if (authToken == nil) {
+                authToken = try KeychainManager.shared.getToken()
+            }
+            
+        } catch {
+            
+        }
         
         if let token = authToken {
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")

@@ -6,7 +6,7 @@ struct ProfileView: View {
     @State private var showingActionSheet = false
     
     init(userId: String) {
-        _viewModel = StateObject(wrappedValue: ProfileViewModel(userId: userId))
+        _viewModel = StateObject(wrappedValue: ProfileViewModel())
     }
     
     var body: some View {
@@ -119,8 +119,8 @@ struct ProfileView: View {
             }
         }.task {
             await viewModel.fetchUser()
-            await viewModel.fetchRecipes()
-            await viewModel.fetchLikedRecipes()
+//            await viewModel.fetchRecipes()
+//            await viewModel.fetchLikedRecipes()
         }
     }
 }

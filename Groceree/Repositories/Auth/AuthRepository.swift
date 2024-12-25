@@ -19,6 +19,7 @@ class AuthRepository: AuthRepositoryProtocol {
             method: "POST",
             body: request
         )
+        try KeychainManager.shared.saveToken(response.token) //Sets the bearer token to see if a user is logged in
         return response.token
     }
     
@@ -34,6 +35,7 @@ class AuthRepository: AuthRepositoryProtocol {
             method: "POST",
             body: request
         )
+        try KeychainManager.shared.saveToken(response.token)
         return response.token
     }
     

@@ -26,9 +26,7 @@ class LoginViewModel: ObservableObject {
         error = nil
         
         do {
-            let token = try await authRepository.login(username: username, password: password)
-            try KeychainManager.shared.saveToken(token)
-            // Login successful - AuthViewModel will handle the state change
+            let _ = try await authRepository.login(username: username, password: password)
         } catch {
             self.error = error.localizedDescription
         }

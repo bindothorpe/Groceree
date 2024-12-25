@@ -28,13 +28,12 @@ class RegisterViewModel: ObservableObject {
         error = nil
         
         do {
-            let token = try await authRepository.register(
+            let _ = try await authRepository.register(
                 firstName: firstName,
                 lastName: lastName,
                 username: username,
                 password: password
             )
-            try KeychainManager.shared.saveToken(token)
         } catch {
             self.error = error.localizedDescription
         }
@@ -52,7 +51,7 @@ class RegisterViewModel: ObservableObject {
             } else {
                 error = nil
             }
-        } catch let error as Error {
+        } catch let error {
             self.error = error.localizedDescription
         }
     }
