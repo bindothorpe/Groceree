@@ -6,14 +6,7 @@
 //
 
 class MockUserRepository: UserRepositoryProtocol {
-    func fetchUser() async throws -> User {
-        try await Task.sleep(nanoseconds: 1 * 1_000_000_000)
-        guard let user = users.first(where: { $0.id == "1234" }) else {
-            throw UserError.notFound
-        }
-        return user
-    }
-    
+       
     private var users: [User] = [
         User(
             id: "1234",
@@ -36,6 +29,14 @@ class MockUserRepository: UserRepositoryProtocol {
     func fetchUser(id: String) async throws -> User {
         try await Task.sleep(nanoseconds: 1 * 1_000_000_000)
         guard let user = users.first(where: { $0.id == id }) else {
+            throw UserError.notFound
+        }
+        return user
+    }
+    
+    func fetchCurrentUser() async throws -> User {
+        try await Task.sleep(nanoseconds: 1 * 1_000_000_000)
+        guard let user = users.first(where: { $0.id == "1234" }) else {
             throw UserError.notFound
         }
         return user

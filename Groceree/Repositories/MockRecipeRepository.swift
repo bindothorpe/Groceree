@@ -8,6 +8,7 @@
 import Foundation
 
 class MockRecipeRepository: RecipeRepositoryProtocol {
+    
     private var recipes: [Recipe] = [
         // User 1 - John (Professional Chef)
         Recipe(
@@ -326,6 +327,41 @@ class MockRecipeRepository: RecipeRepositoryProtocol {
             isFavorite: false
         )
     ]
+    
+    func fetchRecipesFromCurrentUser() async throws -> [RecipeListItem] {
+        
+        let filteredRecipes = recipes.filter { recipe in
+            recipe.author.id == "1234"
+        }
+        
+        return filteredRecipes.map { recipe in
+            RecipeListItem(
+                id: recipe.id,
+                name: recipe.name,
+                imageUrl: recipe.imageUrl,
+                duration: recipe.duration,
+                isFavorite: recipe.isFavorite
+            )
+        }
+    }
+    
+    func fetchRecipesLikedByCurrentUser() async throws -> [RecipeListItem] {
+            try await Task.sleep(nanoseconds: 1 * 1_000_000_000)
+            
+            let filteredRecipes = recipes.filter { recipe in
+                recipe.isFavorite == true
+            }
+            
+            return filteredRecipes.map { recipe in
+                RecipeListItem(
+                    id: recipe.id,
+                    name: recipe.name,
+                    imageUrl: recipe.imageUrl,
+                    duration: recipe.duration,
+                    isFavorite: recipe.isFavorite
+                )
+            }
+    }
     
     func fetchRecipeListItems() async throws -> [RecipeListItem] {
         try await Task.sleep(nanoseconds: 1 * 1_000_000_000)

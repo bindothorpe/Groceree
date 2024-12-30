@@ -6,7 +6,7 @@ struct ProfileView: View {
     @State private var showingActionSheet = false
     
     init(userId: String) {
-        _viewModel = StateObject(wrappedValue: ProfileViewModel())
+        _viewModel = StateObject(wrappedValue: ProfileViewModel(userId: userId))
     }
     
     var body: some View {

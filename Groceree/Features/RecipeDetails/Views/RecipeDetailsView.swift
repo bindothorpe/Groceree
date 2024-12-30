@@ -24,6 +24,7 @@ struct RecipeDetailView: View {
                     VStack(alignment: .leading, spacing: 16) {
                         RecipeHeaderView(
                             imageUrl: recipe.imageUrl,
+                            authorId: recipe.author.id,
                             authorFirstName: recipe.author.firstName
                         )
                         

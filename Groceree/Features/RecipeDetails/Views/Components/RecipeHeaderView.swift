@@ -9,6 +9,7 @@ import SwiftUI
 
 struct RecipeHeaderView: View {
     let imageUrl: String
+    let authorId: String
     let authorFirstName: String
     
     var body: some View {
@@ -28,9 +29,11 @@ struct RecipeHeaderView: View {
             .clipShape(RoundedRectangle(cornerRadius: 8))
             .padding(.horizontal)
             
-            Text("Geschreven door \(authorFirstName)")
-                .foregroundColor(.gray)
-                .padding()
+            NavigationLink(destination: ProfileView(userId: authorId)) {
+                Text("Geschreven door \(authorFirstName) \(authorId)")
+                    .foregroundColor(.gray)
+                    .padding()
+            }
         }
         .background(Color.white)
     }

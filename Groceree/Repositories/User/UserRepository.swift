@@ -17,7 +17,7 @@ class UserRepository: UserRepositoryProtocol {
         return response.user
     }
     
-    func fetchUser() async throws -> User {
+    func fetchCurrentUser() async throws -> User {
         let response: APIUserResponse = try await apiClient.fetch("/api/users/me")
         return response.user
     }
