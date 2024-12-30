@@ -8,7 +8,7 @@
 import SwiftUI
 
 class RecipeDetailViewModel: ObservableObject {
-    @Published var recipeId: Int
+    @Published var recipeId: String
     @Published var recipe: Recipe?
     @Published var showingActionSheet = false
     @Published var showingServingsSheet = false
@@ -21,7 +21,7 @@ class RecipeDetailViewModel: ObservableObject {
     private let shoppingListRepository: ShoppingListRepositoryProtocol
     
     init(
-        recipeId: Int,
+        recipeId: String,
         recipeRepository: RecipeRepositoryProtocol = ServiceContainer.shared.recipeRepository,
         shoppingListRepository: ShoppingListRepositoryProtocol = ServiceContainer.shared.shoppingListRepository
     ) {

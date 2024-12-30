@@ -14,12 +14,12 @@ class CreateRecipeViewModel: ObservableObject {
     @Published var ingredients: [Ingredient] = []
     @Published var instructions: [Instruction] = []
     
-    private var nextIngredientId: Int {
-        (ingredients.map(\.id).max() ?? 0) + 1
+    private var nextIngredientId: String {
+        UUID().uuidString
     }
     
-    private var nextInstructionId: Int {
-        (instructions.map(\.id).max() ?? 0) + 1
+    private var nextInstructionId: String {
+        UUID().uuidString
     }
     
     func addEmptyIngredient() {
@@ -32,7 +32,7 @@ class CreateRecipeViewModel: ObservableObject {
         ingredients.append(ingredient)
     }
     
-    func updateIngredient(id: Int, name: String? = nil, amount: Int? = nil, unit: MeasurementUnit? = nil) {
+    func updateIngredient(id: String, name: String? = nil, amount: Int? = nil, unit: MeasurementUnit? = nil) {
         if let index = ingredients.firstIndex(where: { $0.id == id }) {
             var updatedIngredient = ingredients[index]
             
@@ -50,7 +50,7 @@ class CreateRecipeViewModel: ObservableObject {
         }
     }
     
-    func removeIngredient(withId id: Int) {
+    func removeIngredient(withId id: String) {
         ingredients.removeAll { $0.id == id }
     }
     
@@ -63,7 +63,7 @@ class CreateRecipeViewModel: ObservableObject {
         instructions.append(instruction)
     }
     
-    func removeInstruction(withId id: Int) {
+    func removeInstruction(withId id: String) {
         instructions.removeAll { $0.id == id }
         updateInstructionSteps()
     }
@@ -94,7 +94,7 @@ class CreateRecipeViewModel: ObservableObject {
     
     func createRecipe() {
         let recipe = Recipe(
-            id: 1,
+            id: UUID().uuidString,
             author: Author(id: "1234", firstName: "Jan"),
             name: name,
             imageUrl: "", // This should be set after image upload

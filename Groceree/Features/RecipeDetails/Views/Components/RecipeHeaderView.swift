@@ -30,7 +30,7 @@ struct RecipeHeaderView: View {
             .padding(.horizontal)
             
             NavigationLink(destination: ProfileView(userId: authorId)) {
-                Text("Geschreven door \(authorFirstName) \(authorId)")
+                Text("Geschreven door \(authorFirstName)")
                     .foregroundColor(.gray)
                     .padding()
             }

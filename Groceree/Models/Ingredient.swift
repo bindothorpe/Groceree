@@ -6,8 +6,8 @@
 //
 import Foundation
 
-struct Ingredient: Identifiable, Hashable {
-    let id: Int
+struct Ingredient: Identifiable, Hashable, Decodable {
+    let id: String
     var name: String
     var amount: Int
     var unit: MeasurementUnit

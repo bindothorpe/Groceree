@@ -21,7 +21,7 @@ class ServiceContainer {
         self.apiClient = APIClient(baseURL: APIConstants.baseURL, baseImageUrl: APIConstants.baseImageURL)
         
         self.authRepository = AuthRepository(apiClient: apiClient)
-        self.recipeRepository = MockRecipeRepository()
+        self.recipeRepository = RecipeRepository(apiClient: apiClient)
         self.shoppingListRepository = LocalShoppingListRepository()
         self.userRepository = UserRepository(apiClient: apiClient)
 //        self.userRepository = MockUserRepository()

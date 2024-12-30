@@ -9,7 +9,7 @@ import SwiftUI
 
 struct InstructionsSectionView: View {
     @Binding var instructions: [Instruction]
-    let onDelete: (Int) -> Void
+    let onDelete: (String) -> Void
     let onAdd: () -> Void
     
     var body: some View {

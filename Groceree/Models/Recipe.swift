@@ -6,8 +6,8 @@
 //
 import Foundation
 
-struct Recipe: Identifiable {
-    var id: Int //TODO: Change this back to a let once I have the real API set up
+struct Recipe: Identifiable, Decodable {
+    var id: String //TODO: Change this back to a let once I have the real API set up
     var author: Author
     var name: String
     var imageUrl: String

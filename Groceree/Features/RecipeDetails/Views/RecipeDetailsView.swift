@@ -11,7 +11,7 @@ struct RecipeDetailView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel: RecipeDetailViewModel
     
-    init(recipeId: Int) {
+    init(recipeId: String) {
         _viewModel = StateObject(wrappedValue: RecipeDetailViewModel(recipeId: recipeId))
     }
     

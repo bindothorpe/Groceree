@@ -13,62 +13,71 @@ struct RecipeCard: View {
     
     var body: some View {
         NavigationLink(destination: RecipeDetailView(recipeId: recipeListItem.id)) {
-            ZStack {
-                // Main card background
+            VStack(spacing: 0) {
+                ZStack(alignment: .topTrailing) {
+                    AsyncImage(url: URL(string: recipeListItem.imageUrl)) { image in
+                        image
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: UIScreen.main.bounds.width/2 - 24, height: 200)
+                            .clipped()
+                    } placeholder: {
+                        Rectangle()
+                            .fill(Color.gray.opacity(0.2))
+                            .overlay(
+                                ProgressView()
+                            )
+                    }
+                    .clipShape(
+                        RoundedCorner(radius: 12, corners: [.topLeft, .topRight])
+                    )
+                    
+                    Button(action: {
+                        onFavoriteToggle()
+                    }) {
+                        Image(systemName: recipeListItem.isFavorite ? "heart.fill" : "heart")
+                            .font(.system(size: 24))
+                            .foregroundColor(Theme.primary)
+                            .padding(12)
+                    }
+                }
+                .frame(width: UIScreen.main.bounds.width/2 - 24, height: 200)
+                .clipped()
+                
+                HStack {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(recipeListItem.name)
+                            .font(.system(size: 24, weight: .bold))
+                            .lineLimit(1)
+                        
+                        Text(recipeListItem.formattedDuration())
+                            .font(.system(size: 16))
+                            .foregroundColor(.gray)
+                    }
+                    
+                    Spacer()
+                }
+                .padding()
+            }
+            .frame(width: UIScreen.main.bounds.width/2 - 24)
+            .background(
                 RoundedRectangle(cornerRadius: 12)
                     .fill(.white)
                     .shadow(radius: 4)
-                
-                VStack(spacing: 0) {
-                    // Recipe image with heart overlay
-                    ZStack(alignment: .topTrailing) {
-                        AsyncImage(url: URL(string: recipeListItem.imageUrl)) { image in
-                            image
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                        } placeholder: {
-                            Rectangle()
-                                .fill(Color.gray.opacity(0.2))
-                                .overlay(
-                                    ProgressView()
-                                )
-                        }
-                        
-                        // Heart icon
-                        Button(action: {
-                            // Prevent navigation when tapping the heart
-                            onFavoriteToggle()
-                        }) {
-                            Image(systemName: recipeListItem.isFavorite ? "heart.fill" : "heart")
-                                .font(.system(size: 24))
-                                .foregroundColor(Theme.primary)
-                                .padding(12)
-                        }
-                    }
-                    .frame(height: 200)
-                    .clipped()
-                    
-                    // Recipe info container
-                    HStack {
-                        // Recipe name and time
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(recipeListItem.name)
-                                .font(.system(size: 24, weight: .bold))
-                                .lineLimit(1)
-                            
-                            Text(recipeListItem.formattedDuration())
-                                .font(.system(size: 16))
-                                .foregroundColor(.gray)
-                        }
-                        
-                        Spacer()
-                    }
-                    .padding()
-                }
-            }
+            )
         }
-        // This prevents the NavigationLink from showing the blue color when tapped
         .buttonStyle(PlainButtonStyle())
+    }
+}
+
+// Helper struct to create rounded corners for specific corners
+struct RoundedCorner: Shape {
+    var radius: CGFloat = .infinity
+    var corners: UIRectCorner = .allCorners
+
+    func path(in rect: CGRect) -> Path {
+        let path = UIBezierPath(roundedRect: rect, byRoundingCorners: corners, cornerRadii: CGSize(width: radius, height: radius))
+        return Path(path.cgPath)
     }
 }
 
@@ -76,7 +85,7 @@ struct RecipeCard: View {
 #Preview {
     RecipeCard(
         recipeListItem: RecipeListItem(
-            id: 1,
+            id: "1234",
             name: "Pasta Carbonara",
             imageUrl: "https://example.com/carbonara.jpg",
             duration: 30,

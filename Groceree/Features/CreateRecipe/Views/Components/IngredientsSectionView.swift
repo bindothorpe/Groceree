@@ -9,7 +9,7 @@ import SwiftUI
 
 struct IngredientsSectionView: View {
     @Binding var ingredients: [Ingredient]
-    let onDelete: (Int) -> Void
+    let onDelete: (String) -> Void
     let onAdd: () -> Void
     
     var body: some View {
