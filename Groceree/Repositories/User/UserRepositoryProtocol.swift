@@ -10,4 +10,5 @@ import Foundation
 protocol UserRepositoryProtocol {
     func fetchUser(id: String) async throws -> User
     func fetchCurrentUser() async throws -> User
+    func updateUser(user: UpdateUserDTO) async throws -> User
 }

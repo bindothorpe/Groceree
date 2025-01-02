@@ -31,7 +31,7 @@ struct ProfileInfoView: View {
                     .frame(width: 60, height: 60)
                     .clipShape(Circle())
                     
-                    Text(user.firstName)
+                    Text("\(user.firstName) \(user.lastName)")
                         .font(.title3)
                     
                     Spacer()

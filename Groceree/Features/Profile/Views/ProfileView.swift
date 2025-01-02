@@ -4,6 +4,7 @@ struct ProfileView: View {
     @StateObject private var viewModel: ProfileViewModel
     @EnvironmentObject private var authViewModel: AuthViewModel
     @State private var showingActionSheet = false
+    @State private var showingUpdateSheet = false
     
     init(userId: String? = nil) {
         _viewModel = StateObject(wrappedValue: ProfileViewModel(userId: userId))
@@ -99,12 +100,24 @@ struct ProfileView: View {
                         "Profile Options",
                         isPresented: $showingActionSheet
                     ) {
-                        Button("Edit Profile", action: {})
+                        Button("Edit Profile", action: { showingUpdateSheet = true })
                         Button("Settings", action: {})
                         Button("Logout", role: .destructive) {
                             authViewModel.logout()
                         }
                         Button("Cancel", role: .cancel) {}
+                    }
+                    .sheet(isPresented: $showingUpdateSheet) {
+                        if let currentUser = viewModel.user {
+                            UpdateUserSheet(
+                                user: currentUser,
+                                onUpdateSuccess: {
+                                    Task {
+                                        await viewModel.fetchUser()
+                                    }
+                                }
+                            )
+                        }
                     }
                 }
             } else if let error = viewModel.error {

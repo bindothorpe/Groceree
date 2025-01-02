@@ -21,4 +21,9 @@ class UserRepository: UserRepositoryProtocol {
         let response: APIUserResponse = try await apiClient.fetch("/api/users/me")
         return response.user
     }
+    
+    func updateUser(user: UpdateUserDTO) async throws -> User {
+        let response: APIUserResponse = try await apiClient.fetch("/api/users", method: "PUT", body: user)
+        return response.user
+    }
 }

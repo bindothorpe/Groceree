@@ -6,6 +6,7 @@
 //
 
 class MockUserRepository: UserRepositoryProtocol {
+    
        
     private var users: [User] = [
         User(
@@ -41,4 +42,9 @@ class MockUserRepository: UserRepositoryProtocol {
         }
         return user
     }
+    
+    func updateUser(user: UpdateUserDTO) async throws -> User {
+        return users[0]
+    }
+    
 }
