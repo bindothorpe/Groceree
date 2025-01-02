@@ -47,9 +47,7 @@ class RecipeRepository : RecipeRepositoryProtocol {
     }
     
     func createRecipe(_ recipe: CreateRecipeDTO) async throws -> RecipeListItem {
-        print("RecipeRepository: Trying to create recipe...")
         let response: APICreateRecipeResponse = try await apiClient.fetch("/api/recipes", method: "POST", body: recipe)
-        print("RecipeRepository: Created recipe!")
         return response.recipe.toRecipeListItem()
     }
     

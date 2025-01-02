@@ -49,6 +49,8 @@ struct RecipesView: View {
                 RecipeFormView(mode: .create, onActionSuccess: {
                     Task {
                         await viewModel.fetchRecipes()
+                        viewModel.showingCreateRecipe = false
+                        
                     }
                 })
             }
