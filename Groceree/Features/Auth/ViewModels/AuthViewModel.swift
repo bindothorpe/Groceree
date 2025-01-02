@@ -35,6 +35,7 @@ class AuthViewModel: ObservableObject {
     func logout() {
         do {
             try KeychainManager.shared.deleteToken()
+            try KeychainManager.shared.deleteUsername()
             isAuthenticated = false
         } catch {
             print("Error logging out: \(error)")
