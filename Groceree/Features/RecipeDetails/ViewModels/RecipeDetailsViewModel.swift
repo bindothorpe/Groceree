@@ -20,6 +20,7 @@ class RecipeDetailViewModel: ObservableObject {
     @Published var isDeletingRecipe = false
     @Published var deletionError: String?
     @Published private(set) var isCurrentUserAuthor: Bool = false
+    @Published var showingEditRecipe = false
     
     private var currentUsername: String? {
         try? KeychainManager.shared.getUsername()
@@ -116,9 +117,5 @@ class RecipeDetailViewModel: ObservableObject {
     
     func addToFolder() {
         // TODO: Implement folder functionality
-    }
-    
-    func editRecipe() {
-        // TODO: Implement edit functionality
     }
 }

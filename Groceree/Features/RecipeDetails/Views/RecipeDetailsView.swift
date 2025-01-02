@@ -77,13 +77,18 @@ struct RecipeDetailView: View {
                         }
                     }
                 }
+                .sheet(isPresented: $viewModel.showingEditRecipe) {
+                    RecipeFormView(mode: .edit(viewModel.recipeId))
+                }
                 .confirmationDialog(
                     "Recipe Options",
                     isPresented: $viewModel.showingActionSheet
                 ) {
                     Button("Markeer als favoriet", action: viewModel.toggleFavorite)
                     if viewModel.canEditOrDelete {
-                        Button("Wijzig", action: viewModel.editRecipe)
+                        Button("Wijzig") {
+                            viewModel.showingEditRecipe = true
+                        }
                         Button("Verwijder", role: .destructive) {
                             viewModel.showingDeleteConfirmation = true
                         }

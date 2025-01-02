@@ -7,9 +7,31 @@
 
 import SwiftUI
 
-struct CreateRecipeView: View {
+struct RecipeFormView: View {
     @Environment(\.dismiss) private var dismiss
-    @StateObject private var viewModel = CreateRecipeViewModel()
+    @StateObject private var viewModel: RecipeFormViewModel
+    
+    init(mode: RecipeFormMode) {
+        _viewModel = StateObject(wrappedValue: RecipeFormViewModel(mode: mode))
+    }
+    
+    var title: String {
+        switch viewModel.mode {
+        case .create:
+            return "Nieuw recept"
+        case .edit:
+            return "Wijzig recept"
+        }
+    }
+    
+    var buttonTitle: String {
+        switch viewModel.mode {
+        case .create:
+            return "Maak recept"
+        case .edit:
+            return "Wijzig recept"
+        }
+    }
     
     var body: some View {
         NavigationStack {
@@ -34,7 +56,7 @@ struct CreateRecipeView: View {
                     onAdd: viewModel.addEmptyInstruction
                 )
             }
-            .navigationTitle("Nieuw recept")
+            .navigationTitle(title)
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
@@ -45,9 +67,9 @@ struct CreateRecipeView: View {
                 }
                 
                 ToolbarItem(placement: .bottomBar) {
-                    Button("Maak recept") {
+                    Button(buttonTitle) {
                         Task {
-                            await viewModel.createRecipe()
+                            await viewModel.saveRecipe()
                             dismiss()
                         }
                     }
