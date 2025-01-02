@@ -9,6 +9,7 @@ import SwiftUI
 class ShoppingListViewModel: ObservableObject {
     @Published var items: [ShoppingListItem] = []
     @Published var newItemText: String = ""
+    @Published var showingActionSheet = false
     
     private let repository: ShoppingListRepositoryProtocol
     
@@ -41,5 +42,17 @@ class ShoppingListViewModel: ObservableObject {
     func removeItem(_ item: ShoppingListItem) {
         repository.deleteItem(id: item.id)
         fetchItems() // Refresh the list after removing
+    }
+    
+    func removeSelectedItems() {
+        let selectedItems = items.filter { $0.isChecked }
+        selectedItems.forEach { item in
+            repository.deleteItem(id: item.id)
+        }
+        fetchItems() // Refresh the list after removing selected items
+    }
+    
+    var hasSelectedItems: Bool {
+        items.contains { $0.isChecked }
     }
 }
