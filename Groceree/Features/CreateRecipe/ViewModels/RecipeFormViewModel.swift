@@ -8,7 +8,7 @@ import SwiftUI
 
 enum RecipeFormMode {
     case create
-    case edit(String) // String is the recipe ID
+    case edit(Recipe)
 }
 
 class RecipeFormViewModel: ObservableObject {
@@ -35,10 +35,11 @@ class RecipeFormViewModel: ObservableObject {
         self.onActionSuccess = onActionSuccess
         
         // If we're in edit mode, load the recipe data
-        if case .edit(let recipeId) = mode {
-            Task {
-                await loadRecipe(id: recipeId)
-            }
+        if case .edit(let recipe) = mode {
+            loadRecipe(recipe: recipe)
+//            Task {
+//                await loadRecipe(id: recipeId)
+//            }
         }
     }
     
@@ -48,6 +49,17 @@ class RecipeFormViewModel: ObservableObject {
     
     private var nextInstructionId: String {
         UUID().uuidString
+    }
+    
+    
+    private func loadRecipe(recipe: Recipe) {
+        self.name = recipe.name
+        let totalMinutes = recipe.duration
+        self.hours = totalMinutes / 60
+        self.minutes = totalMinutes % 60
+        self.servings = recipe.servings
+        self.ingredients = recipe.ingredients
+        self.instructions = recipe.instructions
     }
     
     @MainActor
@@ -158,8 +170,8 @@ class RecipeFormViewModel: ObservableObject {
             case .create:
                 try await createNewRecipe()
                 onActionSuccess()
-            case .edit(let recipeId):
-                try await updateExistingRecipe(id: recipeId)
+            case .edit(let recipe):
+                try await updateExistingRecipe(id: recipe.id)
                 onActionSuccess()
             }
         } catch {

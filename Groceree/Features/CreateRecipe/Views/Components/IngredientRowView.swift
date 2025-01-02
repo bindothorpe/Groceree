@@ -19,26 +19,37 @@ struct IngredientRowView: View {
     
     var body: some View {
         HStack {
+            // Ingredient name
             TextField("Ingredient", text: $ingredient.name)
                 .focused($focusedField, equals: .name)
             
+            // Amount
             TextField("Amount", value: $ingredient.amount, format: .number)
                 .keyboardType(.numberPad)
-                .frame(width: 60)
+                .frame(width: 40)
                 .multilineTextAlignment(.trailing)
                 .focused($focusedField, equals: .amount)
             
-            Picker("", selection: $ingredient.unit) {
-                ForEach(MeasurementUnit.allCases, id: \.self) { unit in
-                    Text(unit.displayName).tag(unit)
+            // Unit picker with constrained size
+            Menu {
+                Picker("", selection: $ingredient.unit) {
+                    ForEach(MeasurementUnit.allCases, id: \.self) { unit in
+                        Text(unit.rawValue).tag(unit)
+                    }
                 }
+            } label: {
+                Text(ingredient.unit.rawValue)
+                    .foregroundColor(Theme.primary)
+                    .frame(width: 60)
             }
-            .frame(width: 100)
             
+            // Delete button
             Button(action: onDelete) {
                 Image(systemName: "xmark.circle.fill")
                     .foregroundColor(.gray)
+                    .font(.system(size: 20))
             }
+            .padding(.leading, 8)
         }
     }
 }

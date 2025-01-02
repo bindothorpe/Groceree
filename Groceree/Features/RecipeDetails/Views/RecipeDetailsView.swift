@@ -78,7 +78,7 @@ struct RecipeDetailView: View {
                     }
                 }
                 .sheet(isPresented: $viewModel.showingEditRecipe) {
-                    RecipeFormView(mode: .edit(viewModel.recipeId), onActionSuccess: {
+                    RecipeFormView(mode: .edit(viewModel.recipe!), onActionSuccess: {
                         Task {
                             await viewModel.fetchRecipe()
                             viewModel.showingEditRecipe = false
