@@ -50,6 +50,7 @@ class ProfileViewModel: ObservableObject {
                user = try await userRepository.fetchUser(id: userId)
            } else {
                user = try await userRepository.fetchCurrentUser()
+               
            }
        } catch {
            self.error = error.localizedDescription

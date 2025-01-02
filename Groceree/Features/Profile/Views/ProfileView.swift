@@ -84,11 +84,13 @@ struct ProfileView: View {
                     .toolbar {
                         ToolbarItem(placement: .topBarTrailing) {
                             HStack {
-                                Button(action: {
-                                    showingActionSheet = true
-                                }) {
-                                    Image(systemName: "ellipsis")
-                                        .foregroundColor(Theme.primary)
+                                if(viewModel.isCurrentUser) {
+                                    Button(action: {
+                                        showingActionSheet = true
+                                    }) {
+                                        Image(systemName: "ellipsis")
+                                            .foregroundColor(Theme.primary)
+                                    }
                                 }
                             }
                         }
