@@ -9,7 +9,6 @@ import Foundation
 class APIClient {
     private let baseURL: String
     private let baseImageUrl: String
-    private var authToken: String?
     
     init(baseURL: String, baseImageUrl: String) {
         self.baseURL = baseURL
@@ -29,12 +28,10 @@ class APIClient {
         request.httpMethod = method
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
+        var authToken: String?
+        
         do {
-            
-            if (authToken == nil) {
-                authToken = try KeychainManager.shared.getToken()
-            }
-            
+           authToken = try KeychainManager.shared.getToken()
         } catch {
             
         }
