@@ -13,6 +13,16 @@ class CreateRecipeViewModel: ObservableObject {
     @Published var servings: Int = 2
     @Published var ingredients: [Ingredient] = []
     @Published var instructions: [Instruction] = []
+    @Published var isLoading = false
+    @Published var error: String?
+    @Published var selectedImage: UIImage?
+    @Published var isImageUploading = false
+    
+    private let recipeRepository: RecipeRepositoryProtocol
+    
+    init(recipeRepository: RecipeRepositoryProtocol = ServiceContainer.shared.recipeRepository) {
+            self.recipeRepository = recipeRepository
+        }
     
     private var nextIngredientId: String {
         UUID().uuidString
@@ -92,20 +102,51 @@ class CreateRecipeViewModel: ObservableObject {
                hasInstructions
     }
     
-    func createRecipe() {
-        let recipe = Recipe(
-            id: UUID().uuidString,
-            author: Author(id: "1234", firstName: "Jan"),
-            name: name,
-            imageUrl: "", // This should be set after image upload
-            duration: Int(hours * 60 + minutes),
-            servings: servings,
-            ingredients: ingredients,
-            instructions: instructions,
-            isFavorite: false
-        )
+    @MainActor
+    func createRecipe() async {
+        isLoading = true
+        error = nil
         
-        // TODO: Save recipe to backend
-        print("Created recipe:", recipe)
+        do {
+            print("Creating the recipe")
+            // First create the recipe
+            let createRecipeDTO = CreateRecipeDTO(
+                name: name,
+                duration: hours * 60 + minutes,
+                servings: servings,
+                ingredients: ingredients.map { ingredient in
+                    CreateIngredientDTO(
+                        name: ingredient.name,
+                        amount: ingredient.amount,
+                        unit: ingredient.unit
+                    )
+                },
+                instructions: instructions.map { instruction in
+                    CreateInstructionDTO(
+                        step: instruction.step,
+                        instruction: instruction.instruction
+                    )
+                }
+            )
+            
+            print("Trying to create the recipe...")
+            let createdRecipe = try await recipeRepository.createRecipe(createRecipeDTO)
+            print("Recipe was created!")
+            
+            print("Trying to upload the image")
+            // If we have an image, upload it
+            if let image = selectedImage {
+                try await recipeRepository.uploadImage(image, for: createdRecipe.id)
+            }
+            print("Uploaded image!")
+            
+        } catch {
+            print("There was an error creating the recipe:")
+            print(error)
+            self.error = error.localizedDescription
+        }
+        
+        isLoading = false
     }
+    
 }

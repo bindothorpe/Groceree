@@ -9,5 +9,5 @@ struct UpdateIngredientDTO: Encodable {
     let id: String
     let name: String
     let amount: Int
-    let unit: String // Using the raw value of MeasurementUnit
+    let unit: MeasurementUnit
 }

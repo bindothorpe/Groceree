@@ -24,7 +24,7 @@ struct NavigationBar: View {
                 }
                 .tag(TabItem.shoppingList)
             
-            ProfileView()
+            ProfileView(userId: nil)
                 .tabItem {
                     Label(TabItem.profile.title,
                           systemImage: TabItem.profile.icon)

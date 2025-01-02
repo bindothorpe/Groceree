@@ -21,8 +21,8 @@ struct ProfileView: View {
                             
                             VStack(alignment: .leading, spacing: 16) {
                                 Picker("", selection: $viewModel.selectedTab) {
-                                    Text("My Recipes").tag(0)
-                                    Text("My Likes").tag(1)
+                                    Text(viewModel.isCurrentUser ? "My Recipes" : "Recipes").tag(0)
+                                    Text(viewModel.isCurrentUser ? "My Likes" : "Likes").tag(1)
                                 }
                                 .pickerStyle(.segmented)
                                 .padding(.horizontal)

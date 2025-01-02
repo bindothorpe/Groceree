@@ -11,6 +11,8 @@ class ProfileViewModel: ObservableObject {
    @Published var userId: String?
    @Published var user: User?
    @Published var selectedTab = 0 // 0 for My Recipes, 1 for My Likes
+    
+    @Published var isCurrentUser: Bool
    
    @Published var recipeListItems: [RecipeListItem] = []
    @Published var likedRecipes: [RecipeListItem] = []
@@ -35,6 +37,7 @@ class ProfileViewModel: ObservableObject {
        self.userId = userId
        self.userRepository = userRepository
        self.recipeRepository = recipeRepository
+       self.isCurrentUser = userId == nil
    }
        
    @MainActor

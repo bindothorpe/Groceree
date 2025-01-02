@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 protocol RecipeRepositoryProtocol {
     
@@ -40,4 +41,7 @@ protocol RecipeRepositoryProtocol {
     func toggleFavorite(id: String) async throws
     
 //    func addToShoppingList(recipeId: Int, servings: Int) async throws
+    
+    // POST /api/recipes/{recipe_id}/image where recipe_id is String
+    func uploadImage(_ image: UIImage, for recipeId: String) async throws
 }

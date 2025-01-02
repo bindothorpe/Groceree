@@ -18,7 +18,8 @@ struct CreateRecipeView: View {
                     name: $viewModel.name,
                     hours: $viewModel.hours,
                     minutes: $viewModel.minutes,
-                    servings: $viewModel.servings
+                    servings: $viewModel.servings,
+                    selectedImage: $viewModel.selectedImage
                 )
                 
                 IngredientsSectionView(
@@ -45,15 +46,22 @@ struct CreateRecipeView: View {
                 
                 ToolbarItem(placement: .bottomBar) {
                     Button("Maak recept") {
-                        viewModel.createRecipe()
-                        dismiss()
+                        Task {
+                            await viewModel.createRecipe()
+                            dismiss()
+                        }
                     }
                     .frame(maxWidth: .infinity)
                     .padding()
                     .background(viewModel.isValid ? Theme.primary : Color.gray)
                     .foregroundColor(.white)
                     .clipShape(RoundedRectangle(cornerRadius: 8))
-                    .disabled(!viewModel.isValid)
+                    .disabled(!viewModel.isValid || viewModel.isLoading)
+                }
+            }
+            .overlay {
+                if viewModel.isLoading {
+                    ProgressView()
                 }
             }
         }
