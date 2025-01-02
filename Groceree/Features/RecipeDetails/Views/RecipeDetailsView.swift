@@ -78,7 +78,12 @@ struct RecipeDetailView: View {
                     }
                 }
                 .sheet(isPresented: $viewModel.showingEditRecipe) {
-                    RecipeFormView(mode: .edit(viewModel.recipeId))
+                    RecipeFormView(mode: .edit(viewModel.recipeId), onActionSuccess: {
+                        Task {
+                            await viewModel.fetchRecipe()
+                            viewModel.showingEditRecipe = false
+                        }
+                    })
                 }
                 .confirmationDialog(
                     "Recipe Options",

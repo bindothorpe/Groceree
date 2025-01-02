@@ -11,8 +11,8 @@ struct RecipeFormView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel: RecipeFormViewModel
     
-    init(mode: RecipeFormMode) {
-        _viewModel = StateObject(wrappedValue: RecipeFormViewModel(mode: mode))
+    init(mode: RecipeFormMode, onActionSuccess: @escaping () -> Void) {
+        _viewModel = StateObject(wrappedValue: RecipeFormViewModel(mode: mode, onActionSuccess: onActionSuccess))
     }
     
     var title: String {
@@ -70,7 +70,6 @@ struct RecipeFormView: View {
                     Button(buttonTitle) {
                         Task {
                             await viewModel.saveRecipe()
-                            dismiss()
                         }
                     }
                     .frame(maxWidth: .infinity)

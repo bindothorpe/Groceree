@@ -22,13 +22,17 @@ class RecipeFormViewModel: ObservableObject {
     @Published var error: String?
     @Published var selectedImage: UIImage?
     @Published var isImageUploading = false
+    private var onActionSuccess: () -> Void
     
     let mode: RecipeFormMode
     private let recipeRepository: RecipeRepositoryProtocol
     
-    init(mode: RecipeFormMode, recipeRepository: RecipeRepositoryProtocol = ServiceContainer.shared.recipeRepository) {
+    init(mode: RecipeFormMode,
+         recipeRepository: RecipeRepositoryProtocol = ServiceContainer.shared.recipeRepository,
+         onActionSuccess: @escaping () -> Void) {
         self.mode = mode
         self.recipeRepository = recipeRepository
+        self.onActionSuccess = onActionSuccess
         
         // If we're in edit mode, load the recipe data
         if case .edit(let recipeId) = mode {
@@ -153,8 +157,10 @@ class RecipeFormViewModel: ObservableObject {
             switch mode {
             case .create:
                 try await createNewRecipe()
+                onActionSuccess()
             case .edit(let recipeId):
                 try await updateExistingRecipe(id: recipeId)
+                onActionSuccess()
             }
         } catch {
             self.error = error.localizedDescription
@@ -216,7 +222,7 @@ class RecipeFormViewModel: ObservableObject {
             }
         )
         
-        try await recipeRepository.updateRecipe(updateRecipeDTO)
+        let _ = try await recipeRepository.updateRecipe(updateRecipeDTO)
         
         // If we have a new image, upload it
         if let image = selectedImage {

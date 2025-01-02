@@ -46,7 +46,11 @@ struct RecipesView: View {
                 }
             }
             .sheet(isPresented: $viewModel.showingCreateRecipe) {
-                RecipeFormView(mode: .create)
+                RecipeFormView(mode: .create, onActionSuccess: {
+                    Task {
+                        await viewModel.fetchRecipes()
+                    }
+                })
             }
         }
         .task {
