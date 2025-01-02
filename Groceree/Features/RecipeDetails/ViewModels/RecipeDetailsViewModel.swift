@@ -16,6 +16,18 @@ class RecipeDetailViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var error: String?
     @Published var showingSuccessMessage = false
+    @Published var showingDeleteConfirmation = false
+    @Published var isDeletingRecipe = false
+    @Published var deletionError: String?
+    @Published private(set) var isCurrentUserAuthor: Bool = false
+    
+    private var currentUsername: String? {
+        try? KeychainManager.shared.getUsername()
+    }
+    
+    var canEditOrDelete: Bool {
+        isCurrentUserAuthor
+    }
     
     private let recipeRepository: RecipeRepositoryProtocol
     private let shoppingListRepository: ShoppingListRepositoryProtocol
@@ -29,7 +41,6 @@ class RecipeDetailViewModel: ObservableObject {
         self.recipeRepository = recipeRepository
         self.shoppingListRepository = shoppingListRepository
         self.selectedServings = 2 // Default value until recipe is loaded
-        
         Task {
             await fetchRecipe()
         }
@@ -44,6 +55,8 @@ class RecipeDetailViewModel: ObservableObject {
             recipe = try await recipeRepository.fetchRecipe(id: recipeId)
             if let recipe {
                 selectedServings = recipe.servings
+                // Check if current user is the author
+                isCurrentUserAuthor = currentUsername == recipe.author.id
             }
         } catch {
             self.error = error.localizedDescription
@@ -65,6 +78,23 @@ class RecipeDetailViewModel: ObservableObject {
             }
         }
     }
+    
+    @MainActor
+        func removeRecipe() async {
+            isDeletingRecipe = true
+            deletionError = nil
+            
+            do {
+                try await recipeRepository.deleteRecipe(id: recipeId)
+                isDeletingRecipe = false
+                // Successfully deleted - navigation will be handled by the view
+            } catch {
+                isDeletingRecipe = false
+                deletionError = "Failed to delete recipe: \(error.localizedDescription)"
+                // Show error to user
+                showingDeleteConfirmation = false
+            }
+        }
     
     func addToShoppingList() {
         showingServingsSheet = false

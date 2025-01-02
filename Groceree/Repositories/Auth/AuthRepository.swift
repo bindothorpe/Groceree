@@ -22,6 +22,7 @@ class AuthRepository: AuthRepositoryProtocol {
                 body: request
             )
             try KeychainManager.shared.saveToken(response.token)
+            try KeychainManager.shared.saveUsername(username)
             return response.token
         } catch APIError.unauthorized {
             throw APIAuthError(error: "Invalid credentials")
@@ -41,6 +42,7 @@ class AuthRepository: AuthRepositoryProtocol {
             body: request
         )
         try KeychainManager.shared.saveToken(response.token)
+        try KeychainManager.shared.saveUsername(username)
         return response.token
     }
     

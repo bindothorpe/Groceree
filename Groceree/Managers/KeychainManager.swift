@@ -131,4 +131,28 @@ class KeychainManager {
     func deleteToken() throws {
         try delete(service: "com.groceree.auth", account: "token")
     }
+
+    func saveUsername(_ username: String) throws {
+        guard let data = username.data(using: .utf8) else {
+            throw KeychainError.invalidItemFormat
+        }
+        
+        do {
+            try save(data, service: "com.groceree.auth", account: "username")
+        } catch KeychainError.duplicateEntry {
+            try update(data, service: "com.groceree.auth", account: "username")
+        }
+    }
+
+    func getUsername() throws -> String {
+        let data = try get(service: "com.groceree.auth", account: "username")
+        guard let username = String(data: data, encoding: .utf8) else {
+            throw KeychainError.invalidItemFormat
+        }
+        return username
+    }
+
+    func deleteUsername() throws {
+        try delete(service: "com.groceree.auth", account: "username")
+    }
 }

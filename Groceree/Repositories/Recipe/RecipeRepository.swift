@@ -59,7 +59,11 @@ class RecipeRepository : RecipeRepositoryProtocol {
     }
     
     func deleteRecipe(id: String) async throws {
-        //TODO: Implement
+        let response: APIDeleteRecipeResponse = try await apiClient.fetch("/api/recipes/\(id)", method: "DELETE")
+        
+        if(response.error != nil) {
+            throw APIError.invalidRequest
+        }
     }
     
     func toggleFavorite(id: String) async throws {

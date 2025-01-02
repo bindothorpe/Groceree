@@ -82,10 +82,52 @@ struct RecipeDetailView: View {
                     isPresented: $viewModel.showingActionSheet
                 ) {
                     Button("Markeer als favoriet", action: viewModel.toggleFavorite)
-                    Button("Recept bewaren", action: viewModel.addToBookmarks)
-                    Button("Toevoegen aan folder", action: viewModel.addToFolder)
-                    Button("Wijzig", action: viewModel.editRecipe)
+                    if viewModel.canEditOrDelete {
+                        Button("Wijzig", action: viewModel.editRecipe)
+                        Button("Verwijder", role: .destructive) {
+                            viewModel.showingDeleteConfirmation = true
+                        }
+                    }
                     Button("Cancel", role: .cancel) { }
+                }
+                .confirmationDialog(
+                    "Weet je zeker dat je dit recept wilt verwijderen?",
+                    isPresented: $viewModel.showingDeleteConfirmation,
+                    titleVisibility: .visible
+                ) {
+                    Button("Verwijder", role: .destructive) {
+                        Task {
+                            await viewModel.removeRecipe()
+                            if viewModel.deletionError == nil {
+                                dismiss()
+                            }
+                        }
+                    }
+                    Button("Annuleer", role: .cancel) { }
+                }
+                .alert(
+                    "Error",
+                    isPresented: .init(
+                        get: { viewModel.deletionError != nil },
+                        set: { if !$0 { viewModel.deletionError = nil } }
+                    )
+                ) {
+                    Button("OK", role: .cancel) { }
+                } message: {
+                    if let error = viewModel.deletionError {
+                        Text(error)
+                    }
+                }
+                .overlay {
+                    if viewModel.isDeletingRecipe {
+                        Color.black.opacity(0.4)
+                            .ignoresSafeArea()
+                            .overlay {
+                                ProgressView()
+                                    .tint(.white)
+                                    .scaleEffect(1.5)
+                            }
+                    }
                 }
             } else if let error = viewModel.error {
                 ContentUnavailableView(
