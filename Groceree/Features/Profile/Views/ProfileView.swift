@@ -101,7 +101,6 @@ struct ProfileView: View {
                         isPresented: $showingActionSheet
                     ) {
                         Button("Edit Profile", action: { showingUpdateSheet = true })
-                        Button("Settings", action: {})
                         Button("Logout", role: .destructive) {
                             authViewModel.logout()
                         }
