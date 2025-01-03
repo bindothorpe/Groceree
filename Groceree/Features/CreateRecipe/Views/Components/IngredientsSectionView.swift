@@ -13,7 +13,7 @@ struct IngredientsSectionView: View {
     let onAdd: () -> Void
     
     var body: some View {
-        Section("INGREDIENTEN") {
+        Section("INGREDIENTS") {
             ForEach($ingredients) { $ingredient in
                 IngredientRowView(
                     ingredient: $ingredient,
@@ -21,7 +21,7 @@ struct IngredientsSectionView: View {
                 )
             }
             
-            Button("Nieuw ingredient") {
+            Button("Add ingredient") {
                 onAdd()
             }
             .foregroundColor(Theme.primary)

@@ -18,18 +18,18 @@ struct RecipeFormView: View {
     var title: String {
         switch viewModel.mode {
         case .create:
-            return "Nieuw recept"
+            return "New recipe"
         case .edit:
-            return "Wijzig recept"
+            return "Edit recipe"
         }
     }
     
     var buttonTitle: String {
         switch viewModel.mode {
         case .create:
-            return "Maak recept"
+            return "Create recipe"
         case .edit:
-            return "Wijzig recept"
+            return "Edit recipe"
         }
     }
     
@@ -61,7 +61,7 @@ struct RecipeFormView: View {
                 .navigationBarTitleDisplayMode(.large)
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
-                        Button("Annuleer") {
+                        Button("Cancel") {
                             dismiss()
                         }
                         .foregroundColor(Theme.primary)

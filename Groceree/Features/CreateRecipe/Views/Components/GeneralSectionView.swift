@@ -18,8 +18,8 @@ struct GeneralSectionView: View {
     @State private var isImageLoading = false
     
     var body: some View {
-        Section("ALGEMEEN") {
-            TextField("Naam", text: $name)
+        Section("GENERAL") {
+            TextField("Name", text: $name)
                 .onChange(of: name) {
                     if name.count > 75 {
                         name = String(name.prefix(75))
@@ -29,7 +29,7 @@ struct GeneralSectionView: View {
                         matching: .images,
                         photoLibrary: .shared()) {
                 HStack {
-                    Text("Foto")
+                    Text("Image")
                     Spacer()
                     if isImageLoading {
                         ProgressView()
@@ -40,11 +40,11 @@ struct GeneralSectionView: View {
                             .frame(width: 50, height: 50)
                             .clipShape(RoundedRectangle(cornerRadius: 4))
                     } else {
-                        Text("Voeg toe")
+                        Text("Add")
                             .foregroundColor(.gray)
                     }
                 }
-            }.onChange(of: imageSelection) { newItem in
+            }.onChange(of: imageSelection) { oldItem, newItem in
                 guard let item = newItem else { return }
                 isImageLoading = true
                 
@@ -64,7 +64,7 @@ struct GeneralSectionView: View {
             }
             
             DatePicker(
-                "Duratie",
+                "Duration",
                 selection: Binding(
                     get: {
                         Calendar.current.date(from: DateComponents(hour: hours, minute: minutes)) ?? Date()
@@ -79,7 +79,7 @@ struct GeneralSectionView: View {
             )
             
             HStack {
-                Text("Porties")
+                Text("Portions")
                 Spacer()
                 Stepper(
                     value: $servings,

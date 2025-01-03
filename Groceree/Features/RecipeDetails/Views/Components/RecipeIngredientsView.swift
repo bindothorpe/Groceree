@@ -16,7 +16,7 @@ struct RecipeIngredientsView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("INGREDIENTEN")
+            Text("INGREDIENTS")
                 .foregroundColor(.gray)
                 .font(.system(size: 14))
                 .padding(.horizontal)
@@ -44,7 +44,7 @@ struct RecipeIngredientsView: View {
                             // Stepper
                             Stepper(value: $selectedServings, in: 1...20) {
                                 HStack {
-                                    Text("Aantal porties")
+                                    Text("Portion amount")
                                     Spacer()
                                     Text("\(selectedServings)")
                                         .foregroundColor(.gray)
@@ -58,7 +58,7 @@ struct RecipeIngredientsView: View {
                                         isAddingToList = false
                                     }
                                 }) {
-                                    Text("Annuleer")
+                                    Text("Cancel")
                                         .frame(maxWidth: .infinity)
                                         .foregroundColor(.gray)
                                 }
@@ -73,7 +73,7 @@ struct RecipeIngredientsView: View {
                                         isAddingToList = false
                                     }
                                 }) {
-                                    Text("Toevoegen")
+                                    Text("Add")
                                         .frame(maxWidth: .infinity)
                                         .foregroundColor(Theme.primary)
                                 }
@@ -94,7 +94,7 @@ struct RecipeIngredientsView: View {
                                 isAddingToList = true
                             }
                         }) {
-                            Text("Toevoegen aan winkellijstje")
+                            Text("Add to shopping list")
                                 .foregroundColor(Theme.primary)
                                 .frame(maxWidth: .infinity)
                                 .padding()

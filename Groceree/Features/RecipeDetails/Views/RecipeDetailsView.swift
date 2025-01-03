@@ -89,23 +89,23 @@ struct RecipeDetailView: View {
                     "Recipe Options",
                     isPresented: $viewModel.showingActionSheet
                 ) {
-                    Button("Markeer als favoriet", action: viewModel.toggleFavorite)
+                    Button("Mark as favorite", action: viewModel.toggleFavorite)
                     if viewModel.canEditOrDelete {
-                        Button("Wijzig") {
+                        Button("Edit") {
                             viewModel.showingEditRecipe = true
                         }
-                        Button("Verwijder", role: .destructive) {
+                        Button("Delete", role: .destructive) {
                             viewModel.showingDeleteConfirmation = true
                         }
                     }
                     Button("Cancel", role: .cancel) { }
                 }
                 .confirmationDialog(
-                    "Weet je zeker dat je dit recept wilt verwijderen?",
+                    "Are you sure you want to delete this recipe",
                     isPresented: $viewModel.showingDeleteConfirmation,
                     titleVisibility: .visible
                 ) {
-                    Button("Verwijder", role: .destructive) {
+                    Button("Delete", role: .destructive) {
                         Task {
                             await viewModel.removeRecipe()
                             if viewModel.deletionError == nil {
@@ -113,7 +113,7 @@ struct RecipeDetailView: View {
                             }
                         }
                     }
-                    Button("Annuleer", role: .cancel) { }
+                    Button("Cancel", role: .cancel) { }
                 }
                 .alert(
                     "Error",

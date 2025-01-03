@@ -53,7 +53,7 @@ struct RegisterView: View {
                         .padding()
                         .background(Color(.systemGray6))
                         .cornerRadius(8)
-                        .onChange(of: viewModel.username) { _ in
+                        .onChange(of: viewModel.username) { oldValue, newValue in
                             Task {
                                 await viewModel.checkUsernameAvailability()
                             }

@@ -14,7 +14,7 @@ struct ShoppingListView: View {
         NavigationStack {
             VStack(spacing: 0) {
                 // Header
-                Text("Boodschappenlijstje")
+                Text("Shopping list")
                     .font(.caption)
                     .foregroundColor(.gray)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -44,7 +44,7 @@ struct ShoppingListView: View {
                             .foregroundColor(.gray)
                             .font(.system(size: 22))
                         
-                        TextField("Nieuw product", text: $viewModel.newItemText)
+                        TextField("New product", text: $viewModel.newItemText)
                             .focused($isTextFieldFocused)
                             .foregroundColor(.gray)
                             .onSubmit {

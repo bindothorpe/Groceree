@@ -13,7 +13,7 @@ struct InstructionsSectionView: View {
     let onAdd: () -> Void
     
     var body: some View {
-        Section("BEREIDING") {
+        Section("INSTRUCTIONS") {
             ForEach($instructions) { $instruction in
                 InstructionRowView(
                     instruction: $instruction,
@@ -21,7 +21,7 @@ struct InstructionsSectionView: View {
                 )
             }
             
-            Button("Nieuwe stap") {
+            Button("Add instruction") {
                 onAdd()
             }
             .foregroundColor(Theme.primary)

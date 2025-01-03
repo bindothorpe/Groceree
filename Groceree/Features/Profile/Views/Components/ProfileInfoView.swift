@@ -12,7 +12,7 @@ struct ProfileInfoView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("PERSOONLIJKE INFORMATIE")
+            Text("PERSONAL INFORMATION")
                 .font(.system(size: 14))
                 .foregroundColor(.gray)
                 .padding(.horizontal)
