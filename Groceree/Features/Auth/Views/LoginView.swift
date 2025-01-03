@@ -54,21 +54,12 @@ struct LoginView: View {
                     .font(.caption)
             }
             
-            Button(action: {
-                Task {
-                    await viewModel.login()
-                    await authViewModel.checkAuthenticationStatus()
-                }
-            }) {
-                if viewModel.isLoading {
-                    ProgressView()
-                        .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                } else {
-                    Text("Login")
-                }
+            ActionButton(isValid: !viewModel.isLoginButtonDisabled, isLoading: viewModel.isLoading) {
+                await viewModel.login()
+                await authViewModel.checkAuthenticationStatus()
+            } label: {
+                Text("Login")
             }
-            .buttonStyle(FilledButtonStyle())
-            .disabled(viewModel.isLoginButtonDisabled)
             
             Button("Don't have an account? Register") {
                 showingRegister = true
@@ -105,16 +96,5 @@ struct LoginView: View {
                 break
             }
         }
-    }
-}
-
-struct FilledButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .frame(maxWidth: .infinity)
-            .padding()
-            .background(configuration.isPressed ? Theme.primary.opacity(0.8) : Theme.primary)
-            .foregroundColor(.white)
-            .cornerRadius(8)
     }
 }

@@ -34,56 +34,55 @@ struct RecipeFormView: View {
     }
     
     var body: some View {
-        NavigationStack {
-            Form {
-                GeneralSectionView(
-                    name: $viewModel.name,
-                    hours: $viewModel.hours,
-                    minutes: $viewModel.minutes,
-                    servings: $viewModel.servings,
-                    selectedImage: $viewModel.selectedImage
-                )
-                
-                IngredientsSectionView(
-                    ingredients: $viewModel.ingredients,
-                    onDelete: { viewModel.removeIngredient(withId: $0) },
-                    onAdd: viewModel.addEmptyIngredient
-                )
-                
-                InstructionsSectionView(
-                    instructions: $viewModel.instructions,
-                    onDelete: { viewModel.removeInstruction(withId: $0) },
-                    onAdd: viewModel.addEmptyInstruction
-                )
-            }
-            .navigationTitle(title)
-            .navigationBarTitleDisplayMode(.large)
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button("Annuleer") {
-                        dismiss()
-                    }
-                    .foregroundColor(Theme.primary)
+        ZStack {
+            NavigationStack {
+                Form {
+                    GeneralSectionView(
+                        name: $viewModel.name,
+                        hours: $viewModel.hours,
+                        minutes: $viewModel.minutes,
+                        servings: $viewModel.servings,
+                        selectedImage: $viewModel.selectedImage
+                    )
+                    
+                    IngredientsSectionView(
+                        ingredients: $viewModel.ingredients,
+                        onDelete: { viewModel.removeIngredient(withId: $0) },
+                        onAdd: viewModel.addEmptyIngredient
+                    )
+                    
+                    InstructionsSectionView(
+                        instructions: $viewModel.instructions,
+                        onDelete: { viewModel.removeInstruction(withId: $0) },
+                        onAdd: viewModel.addEmptyInstruction
+                    )
                 }
-                
-                ToolbarItem(placement: .bottomBar) {
-                    Button(buttonTitle) {
-                        Task {
-                            await viewModel.saveRecipe()
+                .navigationTitle(title)
+                .navigationBarTitleDisplayMode(.large)
+                .toolbar {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button("Annuleer") {
+                            dismiss()
+                        }
+                        .foregroundColor(Theme.primary)
+                    }
+                    
+                    ToolbarItem(placement: .bottomBar) {
+                        ActionButton(isValid: viewModel.isValid, isLoading: viewModel.isLoading) {
+                            Task {
+                                await viewModel.saveRecipe()
+                            }
+                        } label: {
+                            Text(buttonTitle)
                         }
                     }
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(viewModel.isValid ? Theme.primary : Color.gray)
-                    .foregroundColor(.white)
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
-                    .disabled(!viewModel.isValid || viewModel.isLoading)
                 }
             }
-            .overlay {
-                if viewModel.isLoading {
-                    ProgressView()
-                }
+            .disabled(viewModel.isLoading)
+            .interactiveDismissDisabled(viewModel.isLoading)
+        
+            if viewModel.isLoading {
+                LoadingOverlay()
             }
         }
     }

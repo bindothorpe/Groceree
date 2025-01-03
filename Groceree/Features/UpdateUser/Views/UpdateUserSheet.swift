@@ -26,74 +26,77 @@ struct UpdateUserSheet: View {
     }
     
     var body: some View {
-        NavigationStack {
-            Form {
-                Section("PERSOONLIJKE INFORMATIE") {
-                    TextField("Voornaam", text: $viewModel.firstName)
-                        .focused($focusedField, equals: .firstName)
-                        .textContentType(.givenName)
-                        .submitLabel(.next)
+        ZStack {
+            NavigationStack {
+                Form {
+                    Section("PERSOONLIJKE INFORMATIE") {
+                        TextField("Voornaam", text: $viewModel.firstName)
+                            .focused($focusedField, equals: .firstName)
+                            .textContentType(.givenName)
+                            .submitLabel(.next)
+                        
+                        TextField("Achternaam", text: $viewModel.lastName)
+                            .focused($focusedField, equals: .lastName)
+                            .textContentType(.familyName)
+                            .submitLabel(.next)
+                        
+                        TextField("Bio", text: $viewModel.bio, axis: .vertical)
+                            .focused($focusedField, equals: .bio)
+                            .submitLabel(.done)
+                            .lineLimit(3...6)
+                    }
                     
-                    TextField("Achternaam", text: $viewModel.lastName)
-                        .focused($focusedField, equals: .lastName)
-                        .textContentType(.familyName)
-                        .submitLabel(.next)
-                    
-                    TextField("Bio", text: $viewModel.bio, axis: .vertical)
-                        .focused($focusedField, equals: .bio)
-                        .submitLabel(.done)
-                        .lineLimit(3...6)
-                }
-                
-                if let error = viewModel.error {
-                    Section {
-                        Text(error)
-                            .foregroundColor(.red)
+                    if let error = viewModel.error {
+                        Section {
+                            Text(error)
+                                .foregroundColor(.red)
+                        }
                     }
                 }
-            }
-            .navigationTitle("Edit Profile")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
-                        dismiss()
+                .navigationTitle("Edit Profile")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button("Cancel") {
+                            dismiss()
+                        }
+                        .foregroundColor(Theme.primary)
                     }
-                    .foregroundColor(Theme.primary)
+                    
+                    ToolbarItem(placement: .bottomBar) {
+                        ActionButton(
+                            isValid: viewModel.isValid,
+                            isLoading: viewModel.isLoading
+                        ) {
+                            await viewModel.updateUser()
+                            dismiss()
+                        } label: {
+                            Text("Save")
+                        }
+                        .padding()
+                    }
                 }
-                
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
+                .onSubmit {
+                    switch focusedField {
+                    case .firstName:
+                        focusedField = .lastName
+                    case .lastName:
+                        focusedField = .bio
+                    case .bio:
                         Task {
                             await viewModel.updateUser()
                             dismiss()
                         }
+                    case .none:
+                        break
                     }
-                    .foregroundColor(viewModel.isValid ? Theme.primary : .gray)
-                    .disabled(!viewModel.isValid)
                 }
             }
-            .onSubmit {
-                switch focusedField {
-                case .firstName:
-                    focusedField = .lastName
-                case .lastName:
-                    focusedField = .bio
-                case .bio:
-                    Task {
-                        await viewModel.updateUser()
-                        dismiss()
-                    }
-                case .none:
-                    break
-                }
-            }
-        }
-        .interactiveDismissDisabled(viewModel.isLoading)
-        .disabled(viewModel.isLoading)
-        .overlay {
+            .interactiveDismissDisabled(viewModel.isLoading)
+            .disabled(viewModel.isLoading)
+            
             if viewModel.isLoading {
-                ProgressView()
+                LoadingOverlay()
             }
         }
     }
