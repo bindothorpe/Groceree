@@ -79,6 +79,21 @@ struct RecipeDetailView: View {
                                 Image(systemName: "ellipsis")
                                     .foregroundColor(Theme.primary)
                             }
+                            .confirmationDialog(
+                                "Recipe Options",
+                                isPresented: $viewModel.showingActionSheet
+                            ) {
+                                Button("Mark as favorite", action: viewModel.toggleFavorite)
+                                if viewModel.canEditOrDelete {
+                                    Button("Edit") {
+                                        viewModel.showingEditRecipe = true
+                                    }
+                                    Button("Delete", role: .destructive) {
+                                        viewModel.showingDeleteConfirmation = true
+                                    }
+                                }
+                                Button("Cancel", role: .cancel) { }
+                            }
                         }
                     }
                 }
@@ -90,21 +105,6 @@ struct RecipeDetailView: View {
                             viewModel.showingEditSuccessMessage = true
                         }
                     })
-                }
-                .confirmationDialog(
-                    "Recipe Options",
-                    isPresented: $viewModel.showingActionSheet
-                ) {
-                    Button("Mark as favorite", action: viewModel.toggleFavorite)
-                    if viewModel.canEditOrDelete {
-                        Button("Edit") {
-                            viewModel.showingEditRecipe = true
-                        }
-                        Button("Delete", role: .destructive) {
-                            viewModel.showingDeleteConfirmation = true
-                        }
-                    }
-                    Button("Cancel", role: .cancel) { }
                 }
                 .confirmationDialog(
                     "Are you sure you want to delete this recipe",

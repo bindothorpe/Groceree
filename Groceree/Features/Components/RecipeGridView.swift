@@ -11,22 +11,42 @@ struct RecipeGridView: View {
     let recipeListItems: [RecipeListItem]
     let onFavoriteToggle: (RecipeListItem) -> Void
     
-    private let columns = [
-        GridItem(.flexible(), spacing: 16),
-        GridItem(.flexible(), spacing: 16)
-    ]
+    @State private var isPortrait = UIDevice.current.orientation.isPortrait
+    
+    private var gridLayout: [GridItem] {
+        let idiom = UIDevice.current.userInterfaceIdiom
+        let isPortrait = UIDevice.current.orientation.isPortrait
+        
+        switch idiom {
+        case .pad:
+            // iPad: 3 columns in portrait, 4 in landscape
+            let columnCount = isPortrait ? 3 : 4
+            return Array(repeating: GridItem(.fixed(UIScreen.main.bounds.width / CGFloat(columnCount) - 20)), count: columnCount)
+        default:
+            // iPhone: 2 columns
+            return Array(repeating: GridItem(.fixed(UIScreen.main.bounds.width / 2 - 20)), count: 2)
+        }
+    }
     
     var body: some View {
-        LazyVGrid(columns: columns, spacing: 16) {
+        LazyVGrid(columns: gridLayout, spacing: 16) {
             ForEach(recipeListItems) { recipeListItem in
                 RecipeCard(
                     recipeListItem: recipeListItem,
                     onFavoriteToggle: {
                         onFavoriteToggle(recipeListItem)
                     }
-                ).frame(height: 280)
+                )
             }
         }
-        .padding()
+        .padding(.horizontal)
+        .onAppear {
+            NotificationCenter.default.addObserver(
+                forName: UIDevice.orientationDidChangeNotification,
+                object: nil,
+                queue: .main) { _ in
+                    isPortrait = UIDevice.current.orientation.isPortrait
+            }
+        }
     }
 }

@@ -82,25 +82,17 @@ struct RegisterView: View {
                         .font(.caption)
                 }
                 
-                Button(action: {
+                ActionButton(
+                    isValid: viewModel.isRegisterButtonDisabled,
+                    isLoading: viewModel.isLoading
+                ) {
                     Task {
                         await viewModel.register()
                         await authViewModel.checkAuthenticationStatus()
                     }
-                }) {
-                    if viewModel.isLoading {
-                        ProgressView()
-                            .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                    } else {
-                        Text("Create Account")
-                    }
+                } label: {
+                    Text("Create Account")
                 }
-                .frame(maxWidth: .infinity)
-                .padding()
-                .background(viewModel.isRegisterButtonDisabled ? Color.gray : Theme.primary)
-                .foregroundColor(.white)
-                .cornerRadius(8)
-                .disabled(viewModel.isRegisterButtonDisabled)
                 
                 Button("Already have an account? Login") {
                     dismiss()

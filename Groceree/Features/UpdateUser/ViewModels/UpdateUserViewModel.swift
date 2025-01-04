@@ -14,14 +14,14 @@ class UpdateUserViewModel: ObservableObject {
     @Published var bio: String
     @Published var selectedImage: UIImage?
     @Published var currentImageUrl: String
-    
+
     @Published var isLoading = false
     @Published var error: String?
-    
+
     private let userRepository: UserRepositoryProtocol
     private let user: User
     private var onUpdateSuccess: () -> Void
-    
+
     init(
         user: User,
         userRepository: UserRepositoryProtocol = ServiceContainer.shared.userRepository,
@@ -35,27 +35,22 @@ class UpdateUserViewModel: ObservableObject {
         self.onUpdateSuccess = onUpdateSuccess
         self.currentImageUrl = user.imageUrl
     }
-    
+
     var isValid: Bool {
-        !firstName.isEmpty &&
-        !lastName.isEmpty &&
-        !bio.isEmpty &&
-        (firstName != user.firstName ||
-         lastName != user.lastName ||
-         bio != user.bio ||
-         selectedImage != nil)
+        !firstName.isEmpty && !lastName.isEmpty && !bio.isEmpty
+            && (firstName != user.firstName || lastName != user.lastName || bio != user.bio
+                || selectedImage != nil)
     }
-    
+
     func updateUser() async {
         isLoading = true
         error = nil
-        
+
         do {
-            // If there's a new image, upload it first
             if let image = selectedImage {
                 try await userRepository.uploadImage(image)
             }
-            
+
             let updateUserDTO = UpdateUserDTO(
                 firstName: firstName,
                 lastName: lastName,
@@ -66,7 +61,7 @@ class UpdateUserViewModel: ObservableObject {
         } catch {
             self.error = error.localizedDescription
         }
-        
+
         isLoading = false
     }
 }

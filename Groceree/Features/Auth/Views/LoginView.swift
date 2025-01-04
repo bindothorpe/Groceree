@@ -70,6 +70,8 @@ struct LoginView: View {
                     .frame(height: 100)
         }
         .padding()
+        .frame(maxWidth: 600)
+        .frame(maxWidth: .infinity)
         .sheet(isPresented: $showingRegister) {
             NavigationStack {
                 RegisterView()

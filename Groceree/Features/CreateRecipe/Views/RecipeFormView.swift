@@ -75,6 +75,7 @@ struct RecipeFormView: View {
                         } label: {
                             Text(buttonTitle)
                         }
+                        .padding(.bottom, UIDevice.isIPad ? 32 : 0)
                     }
                 }
             }

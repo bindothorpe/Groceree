@@ -101,19 +101,19 @@ struct ProfileView: View {
                                         Image(systemName: "ellipsis")
                                             .foregroundColor(Theme.primary)
                                     }
+                                    .confirmationDialog(
+                                        "Profile Options",
+                                        isPresented: $showingActionSheet
+                                    ) {
+                                        Button("Edit Profile", action: { showingUpdateSheet = true })
+                                        Button("Logout", role: .destructive) {
+                                            authViewModel.logout()
+                                        }
+                                        Button("Cancel", role: .cancel) {}
+                                    }
                                 }
                             }
                         }
-                    }
-                    .confirmationDialog(
-                        "Profile Options",
-                        isPresented: $showingActionSheet
-                    ) {
-                        Button("Edit Profile", action: { showingUpdateSheet = true })
-                        Button("Logout", role: .destructive) {
-                            authViewModel.logout()
-                        }
-                        Button("Cancel", role: .cancel) {}
                     }
                     .sheet(isPresented: $showingUpdateSheet) {
                         if let currentUser = viewModel.user {

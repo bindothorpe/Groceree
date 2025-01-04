@@ -84,8 +84,7 @@ struct UpdateUserSheet: View {
                             dismiss()
                         } label: {
                             Text("Save")
-                        }
-                        .padding()
+                        }.padding(.bottom, UIDevice.isIPad ? 32 : 0)
                     }
                 }
                 .onSubmit {

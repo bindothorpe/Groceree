@@ -16,7 +16,7 @@ struct GeneralSectionView: View {
     @State private var imageSelection: PhotosPickerItem? = nil
     @Binding var selectedImage: UIImage?
     @State private var isImageLoading = false
-    
+
     var body: some View {
         Section("GENERAL") {
             TextField("Name", text: $name)
@@ -25,9 +25,11 @@ struct GeneralSectionView: View {
                         name = String(name.prefix(75))
                     }
                 }
-            PhotosPicker(selection: $imageSelection,
-                        matching: .images,
-                        photoLibrary: .shared()) {
+            PhotosPicker(
+                selection: $imageSelection,
+                matching: .images,
+                photoLibrary: .shared()
+            ) {
                 HStack {
                     Text("Image")
                     Spacer()
@@ -47,37 +49,39 @@ struct GeneralSectionView: View {
             }.onChange(of: imageSelection) { oldItem, newItem in
                 guard let item = newItem else { return }
                 isImageLoading = true
-                
+
                 Task {
                     if let data = try? await item.loadTransferable(type: Data.self),
-                       let uiImage = UIImage(data: data) {
+                        let uiImage = UIImage(data: data)
+                    {
                         await MainActor.run {
                             selectedImage = uiImage
                             isImageLoading = false
                         }
                     } else {
-                        // Handle error
                         print("Failed to load image")
                         isImageLoading = false
                     }
                 }
             }
-            
+
             DatePicker(
                 "Duration",
                 selection: Binding(
                     get: {
-                        Calendar.current.date(from: DateComponents(hour: hours, minute: minutes)) ?? Date()
+                        Calendar.current.date(from: DateComponents(hour: hours, minute: minutes))
+                            ?? Date()
                     },
                     set: { newDate in
-                        let components = Calendar.current.dateComponents([.hour, .minute], from: newDate)
+                        let components = Calendar.current.dateComponents(
+                            [.hour, .minute], from: newDate)
                         hours = components.hour ?? 0
                         minutes = components.minute ?? 0
                     }
                 ),
                 displayedComponents: .hourAndMinute
             )
-            
+
             HStack {
                 Text("Portions")
                 Spacer()
