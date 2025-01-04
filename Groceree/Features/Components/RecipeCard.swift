@@ -14,35 +14,46 @@ struct RecipeCard: View {
     var body: some View {
         NavigationLink(destination: RecipeDetailView(recipeId: recipeListItem.id)) {
             VStack(spacing: 0) {
-                Rectangle()
-                    .fill(.white)
-                    .overlay {
-                        ZStack(alignment: .topTrailing) {
-                            AsyncImage(url: URL(string: recipeListItem.imageUrl)) { image in
-                                image
-                                    .resizable()
-                                    .scaledToFill()
-                            } placeholder: {
-                                Rectangle()
-                                    .fill(Color.gray.opacity(0.2))
-                                    .overlay(
-                                        ProgressView()
-                                    )
-                            }
-                            
-                            Button(action: {
-                                onFavoriteToggle()
-                            }) {
-                                Image(systemName: recipeListItem.isFavorite ? "heart.fill" : "heart")
-                                    .font(.system(size: 24))
-                                    .foregroundColor(Theme.primary)
-                                    .padding(12)
-                            }
-                        }
+                ZStack(alignment: .topTrailing) {
+                    // Image
+                    AsyncImage(url: URL(string: recipeListItem.imageUrl)) { image in
+                        image
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: UIScreen.main.bounds.width/2 - 24, height: 200)
+                            .clipped()
+                            .clipShape(
+                                RoundedCorner(radius: 12, corners: [.topLeft, .topRight])
+                            )
+                    } placeholder: {
+                        Rectangle()
+                            .fill(Color.gray.opacity(0.2))
+                            .overlay(
+                                ProgressView()
+                            )
+                            .frame(width: UIScreen.main.bounds.width/2 - 24, height: 200)
+                            .clipShape(
+                                RoundedCorner(radius: 12, corners: [.topLeft, .topRight])
+                            )
                     }
-                    .frame(height: 180)
-                    .clipShape(RoundedCorner(radius: 12, corners: [.topLeft, .topRight]))
-                    .clipped()
+                    
+                    // Heart Button
+                    Button(action: {
+                        onFavoriteToggle()
+                    }) {
+                        Image(systemName: recipeListItem.isFavorite ? "heart.fill" : "heart")
+                            .font(.system(size: 24))
+                            .foregroundColor(Theme.primary)
+                            .padding(12)
+                            .background(
+                                Circle()
+                                    .fill(.white.opacity(0.8))
+                                    .shadow(radius: 2)
+                            )
+                    }
+                    .padding(8)
+                }
+                .frame(width: UIScreen.main.bounds.width/2 - 24, height: 200)
                 
                 HStack {
                     VStack(alignment: .leading, spacing: 4) {
@@ -58,10 +69,8 @@ struct RecipeCard: View {
                     Spacer()
                 }
                 .padding()
-                .frame(height: 80)
-                .background(.white)
-                .clipShape(RoundedCorner(radius: 12, corners: [.bottomLeft, .bottomRight]))
             }
+            .frame(width: UIScreen.main.bounds.width/2 - 24)
             .background(
                 RoundedRectangle(cornerRadius: 12)
                     .fill(.white)
