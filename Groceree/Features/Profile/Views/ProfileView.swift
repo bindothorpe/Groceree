@@ -80,6 +80,15 @@ struct ProfileView: View {
                             }
                         }
                     }
+                    .toast(
+                        style: .success,
+                        isPresented: $viewModel.showingSuccessMessage
+                    ) {
+                        HStack {
+                            Image(systemName: "checkmark.circle.fill")
+                            Text("Updated profile")
+                        }
+                    }
                     .navigationTitle(TabItem.profile.title)
                     .navigationBarTitleDisplayMode(.inline)
                     .toolbar {
@@ -112,6 +121,7 @@ struct ProfileView: View {
                                 user: currentUser,
                                 onUpdateSuccess: {
                                     Task {
+                                        viewModel.showingSuccessMessage = true
                                         await viewModel.fetchUser()
                                     }
                                 }

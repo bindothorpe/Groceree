@@ -47,17 +47,22 @@ struct RecipeDetailView: View {
                         }
                     }
                 }
-                .overlay(alignment: .bottom) {
-                    if viewModel.showingSuccessMessage {
+                .toast(
+                    style: .success,
+                    isPresented: $viewModel.showingSuccessMessage
+                ) {
+                    HStack {
+                        Image(systemName: "checkmark.circle.fill")
                         Text("Added to shopping list")
-                            .foregroundColor(.white)
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 12)
-                            .background(Theme.primary)
-                            .clipShape(Capsule())
-                            .padding(.bottom, 32)
-                            .transition(.move(edge: .bottom).combined(with: .opacity))
-                            .animation(.spring(), value: viewModel.showingSuccessMessage)
+                    }
+                }
+                .toast(
+                    style: .success,
+                    isPresented: $viewModel.showingEditSuccessMessage
+                ) {
+                    HStack {
+                        Image(systemName: "checkmark.circle.fill")
+                        Text("Updated recipe")
                     }
                 }
                 .navigationBarTitleDisplayMode(.large)
@@ -82,6 +87,7 @@ struct RecipeDetailView: View {
                         Task {
                             await viewModel.fetchRecipe()
                             viewModel.showingEditRecipe = false
+                            viewModel.showingEditSuccessMessage = true
                         }
                     })
                 }

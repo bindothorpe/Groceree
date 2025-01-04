@@ -16,6 +16,7 @@ class RecipeDetailViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var error: String?
     @Published var showingSuccessMessage = false
+    @Published var showingEditSuccessMessage = false
     @Published var showingDeleteConfirmation = false
     @Published var isDeletingRecipe = false
     @Published var deletionError: String?
@@ -103,19 +104,6 @@ class RecipeDetailViewModel: ObservableObject {
         if let recipe = recipe {
             shoppingListRepository.addRecipeIngredients(recipe: recipe, servings: selectedServings)
             showingSuccessMessage = true
-            
-            // Hide success message after 2 seconds
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                self.showingSuccessMessage = false
-            }
         }
-    }
-    
-    func addToBookmarks() {
-        // TODO: Implement bookmark functionality
-    }
-    
-    func addToFolder() {
-        // TODO: Implement folder functionality
     }
 }

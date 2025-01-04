@@ -6,5 +6,5 @@
 //
 
 struct APIUserResponse: Decodable {
-    let user: User
+    let user: APIUser
 }

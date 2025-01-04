@@ -5,9 +5,10 @@
 //  Created by Bindo Thorpe on 19/12/2024.
 //
 
+import UIKit
+
 class MockUserRepository: UserRepositoryProtocol {
-    
-       
+      
     private var users: [User] = [
         User(
             id: "1234",
@@ -45,6 +46,10 @@ class MockUserRepository: UserRepositoryProtocol {
     
     func updateUser(user: UpdateUserDTO) async throws -> User {
         return users[0]
+    }
+    
+    func uploadImage(_ image: UIImage) async throws {
+       print("Not implemented in mock repository")
     }
     
 }

@@ -25,6 +25,8 @@ class ProfileViewModel: ObservableObject {
    
    @Published var isLoadingLikes = false
    @Published var errorLikes: String?
+    
+   @Published var showingSuccessMessage = false
    
    private let userRepository: UserRepositoryProtocol
    private let recipeRepository: RecipeRepositoryProtocol

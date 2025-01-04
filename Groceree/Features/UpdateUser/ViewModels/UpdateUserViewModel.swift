@@ -12,6 +12,8 @@ class UpdateUserViewModel: ObservableObject {
     @Published var firstName: String
     @Published var lastName: String
     @Published var bio: String
+    @Published var selectedImage: UIImage?
+    @Published var currentImageUrl: String
     
     @Published var isLoading = false
     @Published var error: String?
@@ -31,6 +33,7 @@ class UpdateUserViewModel: ObservableObject {
         self.user = user
         self.userRepository = userRepository
         self.onUpdateSuccess = onUpdateSuccess
+        self.currentImageUrl = user.imageUrl
     }
     
     var isValid: Bool {
@@ -39,7 +42,8 @@ class UpdateUserViewModel: ObservableObject {
         !bio.isEmpty &&
         (firstName != user.firstName ||
          lastName != user.lastName ||
-         bio != user.bio)
+         bio != user.bio ||
+         selectedImage != nil)
     }
     
     func updateUser() async {
@@ -47,6 +51,11 @@ class UpdateUserViewModel: ObservableObject {
         error = nil
         
         do {
+            // If there's a new image, upload it first
+            if let image = selectedImage {
+                try await userRepository.uploadImage(image)
+            }
+            
             let updateUserDTO = UpdateUserDTO(
                 firstName: firstName,
                 lastName: lastName,

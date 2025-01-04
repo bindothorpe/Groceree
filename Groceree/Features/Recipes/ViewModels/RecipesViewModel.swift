@@ -12,6 +12,7 @@ class RecipesViewModel: ObservableObject {
     @Published var showingCreateRecipe = false
     @Published var isLoading = false
     @Published var error: String?
+    @Published var showingCreateSuccessMessage = false
     
     private let repository: RecipeRepositoryProtocol
     

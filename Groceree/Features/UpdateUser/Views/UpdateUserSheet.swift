@@ -29,6 +29,18 @@ struct UpdateUserSheet: View {
         ZStack {
             NavigationStack {
                 Form {
+                    Section {
+                        HStack {
+                            Spacer()
+                            ProfileImagePicker(
+                                currentImageUrl: viewModel.currentImageUrl,
+                                selectedImage: $viewModel.selectedImage
+                            )
+                            Spacer()
+                        }
+                        .listRowBackground(Color.clear)
+                    }
+                    
                     Section("PERSOONLIJKE INFORMATIE") {
                         TextField("Voornaam", text: $viewModel.firstName)
                             .focused($focusedField, equals: .firstName)

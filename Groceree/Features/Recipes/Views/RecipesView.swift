@@ -17,6 +17,18 @@ struct RecipesView: View {
                     onFavoriteToggle: viewModel.toggleFavorite
                 )
             }
+            .refreshable {
+                await viewModel.fetchRecipes()
+            }
+            .toast(
+                style: .success,
+                isPresented: $viewModel.showingCreateSuccessMessage
+            ) {
+                HStack {
+                    Image(systemName: "checkmark.circle.fill")
+                    Text("Created recipe")
+                }
+            }
             .navigationTitle(TabItem.recipes.title)
             .navigationBarTitleDisplayMode(.inline)
             .searchable(
@@ -50,6 +62,7 @@ struct RecipesView: View {
                     Task {
                         await viewModel.fetchRecipes()
                         viewModel.showingCreateRecipe = false
+                        viewModel.showingCreateSuccessMessage = true
                         
                     }
                 })
