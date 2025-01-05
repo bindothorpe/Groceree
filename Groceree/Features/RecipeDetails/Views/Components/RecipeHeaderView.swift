@@ -6,14 +6,16 @@
 //
 
 import SwiftUI
+import asnycImage
 
 struct RecipeHeaderView: View {
     let imageUrl: String
+    let authorId: String
     let authorFirstName: String
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            AsyncImage(url: URL(string: imageUrl)) { image in
+            CAsyncImage(urlString: imageUrl) { image in
                 image
                     .resizable()
                     .aspectRatio(contentMode: .fill)
@@ -28,9 +30,11 @@ struct RecipeHeaderView: View {
             .clipShape(RoundedRectangle(cornerRadius: 8))
             .padding(.horizontal)
             
-            Text("Geschreven door \(authorFirstName)")
-                .foregroundColor(.gray)
-                .padding()
+            NavigationLink(destination: ProfileView(userId: authorId)) {
+                Text("Written by \(authorFirstName)")
+                    .foregroundColor(.gray)
+                    .padding()
+            }
         }
         .background(Color.white)
     }

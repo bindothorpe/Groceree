@@ -7,8 +7,8 @@
 
 import Foundation
 
-struct Instruction: Identifiable, Hashable {
-    let id: Int
+struct Instruction: Identifiable, Hashable, Decodable {
+    let id: String
     var step: Int
     var instruction: String
 }

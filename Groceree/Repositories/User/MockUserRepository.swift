@@ -5,7 +5,10 @@
 //  Created by Bindo Thorpe on 19/12/2024.
 //
 
+import UIKit
+
 class MockUserRepository: UserRepositoryProtocol {
+      
     private var users: [User] = [
         User(
             id: "1234",
@@ -32,4 +35,21 @@ class MockUserRepository: UserRepositoryProtocol {
         }
         return user
     }
+    
+    func fetchCurrentUser() async throws -> User {
+        try await Task.sleep(nanoseconds: 1 * 1_000_000_000)
+        guard let user = users.first(where: { $0.id == "1234" }) else {
+            throw UserError.notFound
+        }
+        return user
+    }
+    
+    func updateUser(user: UpdateUserDTO) async throws -> User {
+        return users[0]
+    }
+    
+    func uploadImage(_ image: UIImage) async throws {
+       print("Not implemented in mock repository")
+    }
+    
 }

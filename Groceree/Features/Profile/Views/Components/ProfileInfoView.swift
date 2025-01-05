@@ -5,6 +5,7 @@
 //  Created by Bindo Thorpe on 19/12/2024.
 //
 import SwiftUI
+import asnycImage
 
 struct ProfileInfoView: View {
     
@@ -12,14 +13,14 @@ struct ProfileInfoView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("PERSOONLIJKE INFORMATIE")
+            Text("PERSONAL INFORMATION")
                 .font(.system(size: 14))
                 .foregroundColor(.gray)
                 .padding(.horizontal)
             
             VStack(alignment: .leading, spacing: 24) {
                 HStack(spacing: 16) {
-                    AsyncImage(url: URL(string: user.imageUrl)) { image in
+                    CAsyncImage(urlString: user.imageUrl) { image in
                         image
                             .resizable()
                             .aspectRatio(contentMode: .fill)
@@ -31,7 +32,7 @@ struct ProfileInfoView: View {
                     .frame(width: 60, height: 60)
                     .clipShape(Circle())
                     
-                    Text(user.firstName)
+                    Text("\(user.firstName) \(user.lastName)")
                         .font(.title3)
                     
                     Spacer()

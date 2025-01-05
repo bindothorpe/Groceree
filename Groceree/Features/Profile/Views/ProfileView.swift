@@ -1,16 +1,12 @@
-//
-//  ProfileView.swift
-//  Groceree
-//
-//  Created by Bindo Thorpe on 18/11/2024.
-//
-
 import SwiftUI
 
 struct ProfileView: View {
     @StateObject private var viewModel: ProfileViewModel
+    @EnvironmentObject private var authViewModel: AuthViewModel
+    @State private var showingActionSheet = false
+    @State private var showingUpdateSheet = false
     
-    init(userId: String) {
+    init(userId: String? = nil) {
         _viewModel = StateObject(wrappedValue: ProfileViewModel(userId: userId))
     }
     
@@ -24,19 +20,16 @@ struct ProfileView: View {
                         VStack(spacing: 24) {
                             ProfileInfoView(user: user)
                             
-                            // Recipes Section
                             VStack(alignment: .leading, spacing: 16) {
-                                // Tab selector
                                 Picker("", selection: $viewModel.selectedTab) {
-                                    Text("My Recipes").tag(0)
-                                    Text("My Likes").tag(1)
+                                    Text(viewModel.isCurrentUser ? "My Recipes" : "Recipes").tag(0)
+                                    Text(viewModel.isCurrentUser ? "My Likes" : "Likes").tag(1)
                                 }
                                 .pickerStyle(.segmented)
                                 .padding(.horizontal)
+                                .padding(.bottom, 24)
                                 
-                                // Content based on selected tab
                                 if viewModel.selectedTab == 0 {
-                                    // My Recipes tab
                                     if viewModel.isLoadingRecipes {
                                         ProgressView()
                                             .frame(maxWidth: .infinity)
@@ -44,8 +37,8 @@ struct ProfileView: View {
                                         RecipeGridView(
                                             recipeListItems: viewModel.recipeListItems,
                                             onFavoriteToggle: { recipe in
-                                                        viewModel.toggleFavorite(recipe)
-                                                    }
+                                                viewModel.toggleFavorite(recipe)
+                                            }
                                         )
                                     } else if let error = viewModel.errorRecipes {
                                         ContentUnavailableView(
@@ -61,7 +54,6 @@ struct ProfileView: View {
                                         )
                                     }
                                 } else {
-                                    // My Likes tab
                                     if viewModel.isLoadingLikes {
                                         ProgressView()
                                             .frame(maxWidth: .infinity)
@@ -69,8 +61,8 @@ struct ProfileView: View {
                                         RecipeGridView(
                                             recipeListItems: viewModel.likedRecipes,
                                             onFavoriteToggle: { recipe in
-                                                        viewModel.toggleFavorite(recipe)
-                                                    }
+                                                viewModel.toggleFavorite(recipe)
+                                            }
                                         )
                                     } else if let error = viewModel.errorLikes {
                                         ContentUnavailableView(
@@ -89,20 +81,52 @@ struct ProfileView: View {
                             }
                         }
                     }
+                    .toast(
+                        style: .success,
+                        isPresented: $viewModel.showingSuccessMessage
+                    ) {
+                        HStack {
+                            Image(systemName: "checkmark.circle.fill")
+                            Text("Updated profile")
+                        }
+                    }
                     .navigationTitle(TabItem.profile.title)
                     .navigationBarTitleDisplayMode(.inline)
                     .toolbar {
                         ToolbarItem(placement: .topBarTrailing) {
                             HStack {
-                                Button(action: {}) {
-                                    Image(systemName: "bell")
-                                        .foregroundColor(Theme.primary)
-                                }
-                                Button(action: {}) {
-                                    Image(systemName: "ellipsis")
-                                        .foregroundColor(Theme.primary)
+                                if(viewModel.isCurrentUser) {
+                                    Button(action: {
+                                        showingActionSheet = true
+                                    }) {
+                                        Image(systemName: "ellipsis")
+                                            .foregroundColor(Theme.primary)
+                                    }
+                                    .confirmationDialog(
+                                        "Profile Options",
+                                        isPresented: $showingActionSheet
+                                    ) {
+                                        Button("Edit Profile", action: { showingUpdateSheet = true })
+                                        Button("Logout", role: .destructive) {
+                                            authViewModel.logout()
+                                        }
+                                        Button("Cancel", role: .cancel) {}
+                                    }
                                 }
                             }
+                        }
+                    }
+                    .sheet(isPresented: $showingUpdateSheet) {
+                        if let currentUser = viewModel.user {
+                            UpdateUserSheet(
+                                user: currentUser,
+                                onUpdateSuccess: {
+                                    Task {
+                                        viewModel.showingSuccessMessage = true
+                                        await viewModel.fetchUser()
+                                    }
+                                }
+                            )
                         }
                     }
                 }
@@ -119,11 +143,9 @@ struct ProfileView: View {
                 )
             }
         }.task {
-            // Initial load
             await viewModel.fetchUser()
             await viewModel.fetchRecipes()
             await viewModel.fetchLikedRecipes()
         }
-        
     }
 }

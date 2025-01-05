@@ -8,9 +8,26 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+    @StateObject private var authViewModel = AuthViewModel()
+    
     var body: some View {
-        NavigationBar()
-            .background(Theme.background)
+        Group {
+            if authViewModel.isCheckingAuth {
+                // Show loading screen while checking auth status
+                ProgressView()
+            } else if authViewModel.isAuthenticated {
+                // Show main app content
+                NavigationBar()
+                    .background(Theme.background)
+                    .environmentObject(authViewModel)
+            } else {
+                // Show auth flow (login/register)
+                LoginView()
+                    .environmentObject(authViewModel)
+            }
+        }
+        
     }
 }
 

@@ -18,7 +18,7 @@ struct InstructionRowView: View {
                 .foregroundColor(.gray)
                 .frame(width: 30, alignment: .leading)
             
-            TextField("Voeg een stap toe", text: $instruction.instruction)
+            TextField("Add an instruction", text: $instruction.instruction)
                 .focused($isFocused)
             
             Button(action: onDelete) {

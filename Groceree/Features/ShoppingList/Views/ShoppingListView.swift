@@ -14,7 +14,7 @@ struct ShoppingListView: View {
         NavigationStack {
             VStack(spacing: 0) {
                 // Header
-                Text("Boodschappenlijstje")
+                Text("Shopping list")
                     .font(.caption)
                     .foregroundColor(.gray)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -44,7 +44,7 @@ struct ShoppingListView: View {
                             .foregroundColor(.gray)
                             .font(.system(size: 22))
                         
-                        TextField("Nieuw product", text: $viewModel.newItemText)
+                        TextField("New product", text: $viewModel.newItemText)
                             .focused($isTextFieldFocused)
                             .foregroundColor(.gray)
                             .onSubmit {
@@ -62,18 +62,35 @@ struct ShoppingListView: View {
                     .listRowSeparator(.hidden)
                 }
                 .listStyle(.plain)
-                
-                // Clear list button
-                if !viewModel.items.isEmpty {
-                    Button(action: viewModel.clearList) {
-                        Text("Clear List")
-                            .foregroundColor(Theme.secondaryDarken)
-                            .padding()
-                    }
-                }
             }
             .navigationTitle(TabItem.shoppingList.title)
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(action: {
+                        viewModel.showingActionSheet = true
+                    }) {
+                        Image(systemName: "ellipsis")
+                            .foregroundColor(Theme.primary)
+                    }
+                    .disabled(viewModel.items.isEmpty)
+                    .confirmationDialog(
+                        "List Options",
+                        isPresented: $viewModel.showingActionSheet
+                    ) {
+                        if viewModel.hasSelectedItems {
+                            Button("Remove Selected", role: .destructive) {
+                                viewModel.removeSelectedItems()
+                            }
+                        }
+                        Button("Remove All", role: .destructive) {
+                            viewModel.clearList()
+                        }
+                        Button("Cancel", role: .cancel) {}
+                    }
+                }
+                
+            }
         }
         .onAppear {
             viewModel.fetchItems()

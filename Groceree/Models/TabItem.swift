@@ -10,9 +10,9 @@ enum TabItem {
     
     var title: String {
         switch self {
-        case .recipes: return "Recepten"
-        case .shoppingList: return "Winkellijst"
-        case .profile: return "Profiel"
+        case .recipes: return "Recipes"
+        case .shoppingList: return "Shopping list"
+        case .profile: return "Profile"
         }
     }
     

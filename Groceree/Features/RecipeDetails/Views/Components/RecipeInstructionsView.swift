@@ -12,7 +12,7 @@ struct RecipeInstructionsView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("BEREIDINGSWIJZE")
+            Text("INSTRUCTIONS")
                 .foregroundColor(.gray)
                 .font(.system(size: 14))
                 .padding(.horizontal)

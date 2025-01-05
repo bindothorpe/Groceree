@@ -9,14 +9,21 @@ import Foundation
 
 class ServiceContainer {
     static let shared = ServiceContainer()
-    
+
+    let apiClient: APIClient
+
     let recipeRepository: RecipeRepositoryProtocol
     let shoppingListRepository: ShoppingListRepositoryProtocol
     let userRepository: UserRepositoryProtocol
-    
+    let authRepository: AuthRepositoryProtocol
+
     private init() {
-        self.recipeRepository = MockRecipeRepository()
+        self.apiClient = APIClient(
+            baseURL: APIConstants.baseURL, baseImageUrl: APIConstants.baseImageURL)
+
+        self.authRepository = AuthRepository(apiClient: apiClient)
+        self.recipeRepository = RecipeRepository(apiClient: apiClient)
         self.shoppingListRepository = LocalShoppingListRepository()
-        self.userRepository = MockUserRepository()
+        self.userRepository = UserRepository(apiClient: apiClient)
     }
 }

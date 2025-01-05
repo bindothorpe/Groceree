@@ -13,21 +13,21 @@ struct RecipeGeneralInfoView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("ALGEMEEN")
+            Text("GENERAL")
                 .foregroundColor(.gray)
                 .font(.system(size: 14))
                 .padding(.horizontal)
             
             VStack(alignment: .leading, spacing: 16) {
                 HStack {
-                    Text("Porties")
+                    Text("Portions")
                     Spacer()
                     Text("\(servings)")
                         .foregroundColor(.gray)
                 }
                 
                 HStack {
-                    Text("Duratie")
+                    Text("Duration")
                     Spacer()
                     Text(duration)
                         .foregroundColor(.gray)

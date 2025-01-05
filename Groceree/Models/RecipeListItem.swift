@@ -7,8 +7,8 @@
 
 import Foundation
 
-struct RecipeListItem: Identifiable {
-    let id: Int
+struct RecipeListItem: Identifiable, Decodable {
+    let id: String
     var name: String
     var imageUrl: String
     var duration: Int

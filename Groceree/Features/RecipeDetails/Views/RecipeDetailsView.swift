@@ -11,7 +11,7 @@ struct RecipeDetailView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel: RecipeDetailViewModel
     
-    init(recipeId: Int) {
+    init(recipeId: String) {
         _viewModel = StateObject(wrappedValue: RecipeDetailViewModel(recipeId: recipeId))
     }
     
@@ -24,6 +24,7 @@ struct RecipeDetailView: View {
                     VStack(alignment: .leading, spacing: 16) {
                         RecipeHeaderView(
                             imageUrl: recipe.imageUrl,
+                            authorId: recipe.author.id,
                             authorFirstName: recipe.author.firstName
                         )
                         
@@ -46,17 +47,22 @@ struct RecipeDetailView: View {
                         }
                     }
                 }
-                .overlay(alignment: .bottom) {
-                    if viewModel.showingSuccessMessage {
+                .toast(
+                    style: .success,
+                    isPresented: $viewModel.showingSuccessMessage
+                ) {
+                    HStack {
+                        Image(systemName: "checkmark.circle.fill")
                         Text("Added to shopping list")
-                            .foregroundColor(.white)
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 12)
-                            .background(Theme.primary)
-                            .clipShape(Capsule())
-                            .padding(.bottom, 32)
-                            .transition(.move(edge: .bottom).combined(with: .opacity))
-                            .animation(.spring(), value: viewModel.showingSuccessMessage)
+                    }
+                }
+                .toast(
+                    style: .success,
+                    isPresented: $viewModel.showingEditSuccessMessage
+                ) {
+                    HStack {
+                        Image(systemName: "checkmark.circle.fill")
+                        Text("Updated recipe")
                     }
                 }
                 .navigationBarTitleDisplayMode(.large)
@@ -73,18 +79,71 @@ struct RecipeDetailView: View {
                                 Image(systemName: "ellipsis")
                                     .foregroundColor(Theme.primary)
                             }
+                            .confirmationDialog(
+                                "Recipe Options",
+                                isPresented: $viewModel.showingActionSheet
+                            ) {
+                                Button("Mark as favorite", action: viewModel.toggleFavorite)
+                                if viewModel.canEditOrDelete {
+                                    Button("Edit") {
+                                        viewModel.showingEditRecipe = true
+                                    }
+                                    Button("Delete", role: .destructive) {
+                                        viewModel.showingDeleteConfirmation = true
+                                    }
+                                }
+                                Button("Cancel", role: .cancel) { }
+                            }
                         }
                     }
                 }
+                .sheet(isPresented: $viewModel.showingEditRecipe) {
+                    RecipeFormView(mode: .edit(viewModel.recipe!), onActionSuccess: {
+                        Task {
+                            await viewModel.fetchRecipe()
+                            viewModel.showingEditRecipe = false
+                            viewModel.showingEditSuccessMessage = true
+                        }
+                    })
+                }
                 .confirmationDialog(
-                    "Recipe Options",
-                    isPresented: $viewModel.showingActionSheet
+                    "Are you sure you want to delete this recipe",
+                    isPresented: $viewModel.showingDeleteConfirmation,
+                    titleVisibility: .visible
                 ) {
-                    Button("Markeer als favoriet", action: viewModel.toggleFavorite)
-                    Button("Recept bewaren", action: viewModel.addToBookmarks)
-                    Button("Toevoegen aan folder", action: viewModel.addToFolder)
-                    Button("Wijzig", action: viewModel.editRecipe)
+                    Button("Delete", role: .destructive) {
+                        Task {
+                            await viewModel.removeRecipe()
+                            if viewModel.deletionError == nil {
+                                dismiss()
+                            }
+                        }
+                    }
                     Button("Cancel", role: .cancel) { }
+                }
+                .alert(
+                    "Error",
+                    isPresented: .init(
+                        get: { viewModel.deletionError != nil },
+                        set: { if !$0 { viewModel.deletionError = nil } }
+                    )
+                ) {
+                    Button("OK", role: .cancel) { }
+                } message: {
+                    if let error = viewModel.deletionError {
+                        Text(error)
+                    }
+                }
+                .overlay {
+                    if viewModel.isDeletingRecipe {
+                        Color.black.opacity(0.4)
+                            .ignoresSafeArea()
+                            .overlay {
+                                ProgressView()
+                                    .tint(.white)
+                                    .scaleEffect(1.5)
+                            }
+                    }
                 }
             } else if let error = viewModel.error {
                 ContentUnavailableView(
