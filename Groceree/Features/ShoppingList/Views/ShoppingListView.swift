@@ -74,21 +74,22 @@ struct ShoppingListView: View {
                             .foregroundColor(Theme.primary)
                     }
                     .disabled(viewModel.items.isEmpty)
-                }
-            }
-            .confirmationDialog(
-                "List Options",
-                isPresented: $viewModel.showingActionSheet
-            ) {
-                if viewModel.hasSelectedItems {
-                    Button("Remove Selected", role: .destructive) {
-                        viewModel.removeSelectedItems()
+                    .confirmationDialog(
+                        "List Options",
+                        isPresented: $viewModel.showingActionSheet
+                    ) {
+                        if viewModel.hasSelectedItems {
+                            Button("Remove Selected", role: .destructive) {
+                                viewModel.removeSelectedItems()
+                            }
+                        }
+                        Button("Remove All", role: .destructive) {
+                            viewModel.clearList()
+                        }
+                        Button("Cancel", role: .cancel) {}
                     }
                 }
-                Button("Remove All", role: .destructive) {
-                    viewModel.clearList()
-                }
-                Button("Cancel", role: .cancel) {}
+                
             }
         }
         .onAppear {

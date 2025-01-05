@@ -7,6 +7,7 @@
 
 import SwiftUI
 import PhotosUI
+import asnycImage
 
 struct ProfileImagePicker: View {
     let currentImageUrl: String
@@ -26,7 +27,7 @@ struct ProfileImagePicker: View {
                             .resizable()
                             .aspectRatio(contentMode: .fill)
                     } else {
-                        AsyncImage(url: URL(string: currentImageUrl)) { image in
+                        CAsyncImage(urlString: currentImageUrl) { image in
                             image
                                 .resizable()
                                 .aspectRatio(contentMode: .fill)

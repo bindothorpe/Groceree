@@ -1,0 +1,15 @@
+{
+  "originHash" : "8c6b3290e8dc9d0e4d88e4c56205e07a743c7eb3c21533079a54f4459343107e",
+  "pins" : [
+    {
+      "identity" : "asyncimage",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/baskurthalit/asyncImage.git",
+      "state" : {
+        "revision" : "081fd7fbcbea6ecec50265042f023b3ed5fed7cb",
+        "version" : "1.0.3"
+      }
+    }
+  ],
+  "version" : 3
+}

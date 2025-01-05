@@ -27,6 +27,7 @@ struct ProfileView: View {
                                 }
                                 .pickerStyle(.segmented)
                                 .padding(.horizontal)
+                                .padding(.bottom, 24)
                                 
                                 if viewModel.selectedTab == 0 {
                                     if viewModel.isLoadingRecipes {

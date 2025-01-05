@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import asnycImage
 
 struct RecipeHeaderView: View {
     let imageUrl: String
@@ -14,7 +15,7 @@ struct RecipeHeaderView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            AsyncImage(url: URL(string: imageUrl)) { image in
+            CAsyncImage(urlString: imageUrl) { image in
                 image
                     .resizable()
                     .aspectRatio(contentMode: .fill)

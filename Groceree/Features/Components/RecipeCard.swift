@@ -6,45 +6,44 @@
 //
 
 import SwiftUI
+import asnycImage
 
 struct RecipeCard: View {
     let recipeListItem: RecipeListItem
     let onFavoriteToggle: () -> Void
+    let width: CGFloat
+    let height: CGFloat
     
     var body: some View {
         NavigationLink(destination: RecipeDetailView(recipeId: recipeListItem.id)) {
             VStack(spacing: 0) {
                 ZStack(alignment: .topTrailing) {
-                    // Image
-                    AsyncImage(url: URL(string: recipeListItem.imageUrl)) { image in
+                    CAsyncImage(urlString: recipeListItem.imageUrl) { image in
                         image
                             .resizable()
-                            .scaledToFill()
-                            .frame(width: UIScreen.main.bounds.width/2 - 24, height: 200)
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: width, height: height)
                             .clipped()
-                            .clipShape(
-                                RoundedCorner(radius: 12, corners: [.topLeft, .topRight])
-                            )
                     } placeholder: {
                         Rectangle()
                             .fill(Color.gray.opacity(0.2))
+                            .frame(width: width, height: height)
                             .overlay(
                                 ProgressView()
                             )
-                            .frame(width: UIScreen.main.bounds.width/2 - 24, height: 200)
-                            .clipShape(
-                                RoundedCorner(radius: 12, corners: [.topLeft, .topRight])
-                            )
                     }
+                    .clipShape(
+                        RoundedCorner(radius: 12, corners: [.topLeft, .topRight])
+                    )
                     
                     // Heart Button
                     Button(action: {
                         onFavoriteToggle()
                     }) {
                         Image(systemName: recipeListItem.isFavorite ? "heart.fill" : "heart")
-                            .font(.system(size: 24))
+                            .font(.system(size: 20))
                             .foregroundColor(Theme.primary)
-                            .padding(12)
+                            .padding(8)
                             .background(
                                 Circle()
                                     .fill(.white.opacity(0.8))
@@ -53,29 +52,25 @@ struct RecipeCard: View {
                     }
                     .padding(8)
                 }
-                .frame(width: UIScreen.main.bounds.width/2 - 24, height: 200)
                 
-                HStack {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(recipeListItem.name)
-                            .font(.system(size: 24, weight: .bold))
-                            .lineLimit(1)
-                        
-                        Text(recipeListItem.formattedDuration())
-                            .font(.system(size: 16))
-                            .foregroundColor(.gray)
-                    }
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(recipeListItem.name)
+                        .font(.system(size: 16, weight: .bold))
+                        .lineLimit(1)
                     
-                    Spacer()
+                    Text(recipeListItem.formattedDuration())
+                        .font(.system(size: 14))
+                        .foregroundColor(.gray)
                 }
-                .padding()
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(12)
             }
-            .frame(width: UIScreen.main.bounds.width/2 - 24)
             .background(
                 RoundedRectangle(cornerRadius: 12)
                     .fill(.white)
                     .shadow(radius: 4)
             )
+            .frame(maxWidth: .infinity)
         }
         .buttonStyle(PlainButtonStyle())
     }
@@ -90,19 +85,4 @@ struct RoundedCorner: Shape {
         let path = UIBezierPath(roundedRect: rect, byRoundingCorners: corners, cornerRadii: CGSize(width: radius, height: radius))
         return Path(path.cgPath)
     }
-}
-
-// Preview provider for SwiftUI canvas
-#Preview {
-    RecipeCard(
-        recipeListItem: RecipeListItem(
-            id: "1234",
-            name: "Pasta Carbonara",
-            imageUrl: "https://example.com/carbonara.jpg",
-            duration: 30,
-            isFavorite: false
-        ),
-        onFavoriteToggle: {}
-    )
-    .frame(width: 300)
 }

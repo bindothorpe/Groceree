@@ -11,42 +11,63 @@ struct RecipeGridView: View {
     let recipeListItems: [RecipeListItem]
     let onFavoriteToggle: (RecipeListItem) -> Void
     
-    @State private var isPortrait = UIDevice.current.orientation.isPortrait
-    
-    private var gridLayout: [GridItem] {
-        let idiom = UIDevice.current.userInterfaceIdiom
-        let isPortrait = UIDevice.current.orientation.isPortrait
-        
-        switch idiom {
-        case .pad:
-            // iPad: 3 columns in portrait, 4 in landscape
-            let columnCount = isPortrait ? 3 : 4
-            return Array(repeating: GridItem(.fixed(UIScreen.main.bounds.width / CGFloat(columnCount) - 20)), count: columnCount)
-        default:
-            // iPhone: 2 columns
-            return Array(repeating: GridItem(.fixed(UIScreen.main.bounds.width / 2 - 20)), count: 2)
-        }
-    }
+    @Environment(\.horizontalSizeClass) private var sizeClass
+    @State private var orientation = UIDevice.current.orientation
     
     var body: some View {
-        LazyVGrid(columns: gridLayout, spacing: 16) {
+        LazyVGrid(columns: columns, spacing: 16) {
             ForEach(recipeListItems) { recipeListItem in
                 RecipeCard(
                     recipeListItem: recipeListItem,
                     onFavoriteToggle: {
                         onFavoriteToggle(recipeListItem)
-                    }
+                    },
+                    width: calculateItemWidth(),
+                    height: 160
                 )
             }
         }
         .padding(.horizontal)
-        .onAppear {
-            NotificationCenter.default.addObserver(
-                forName: UIDevice.orientationDidChangeNotification,
-                object: nil,
-                queue: .main) { _ in
-                    isPortrait = UIDevice.current.orientation.isPortrait
-            }
+        .onRotate { newOrientation in
+            orientation = newOrientation
         }
+    }
+    
+    private func calculateItemWidth() -> CGFloat {
+        let spacing: CGFloat = 16
+        let columnCount: Int = UIDevice.current.userInterfaceIdiom == .pad
+            ? (sizeClass == .regular ? 3 : 4)
+            : 2
+            
+        return (UIScreen.main.bounds.width - (CGFloat(columnCount - 1) * spacing) - (spacing * 2)) / CGFloat(columnCount)
+    }
+
+    private var columns: [GridItem] {
+        let spacing: CGFloat = 16
+        let columnCount: Int = UIDevice.current.userInterfaceIdiom == .pad
+            ? (sizeClass == .regular ? 3 : 4)
+            : 2
+            
+        return Array(repeating: GridItem(.fixed(calculateItemWidth()), spacing: spacing), count: columnCount)
+    }
+}
+
+// View modifier to handle rotation
+struct DeviceRotationViewModifier: ViewModifier {
+    let action: (UIDeviceOrientation) -> Void
+
+    func body(content: Content) -> some View {
+        content
+            .onAppear()
+            .onReceive(NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)) { _ in
+                action(UIDevice.current.orientation)
+            }
+    }
+}
+
+// Extension to make the modifier easier to use
+extension View {
+    func onRotate(perform action: @escaping (UIDeviceOrientation) -> Void) -> some View {
+        self.modifier(DeviceRotationViewModifier(action: action))
     }
 }

@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		2247CE812D299CE500AF1CE6 /* asnycImage in Frameworks */ = {isa = PBXBuildFile; productRef = 2247CE802D299CE500AF1CE6 /* asnycImage */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		22DCA4022CEB6BA50074314D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2247CE812D299CE500AF1CE6 /* asnycImage in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -72,12 +77,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2247CE7F2D299CE500AF1CE6 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		22DCA3E82CEB6BA30074314D = {
 			isa = PBXGroup;
 			children = (
 				22DCA3F32CEB6BA30074314D /* Groceree */,
 				22DCA4042CEB6BA50074314D /* GrocereeTests */,
 				22DCA40E2CEB6BA50074314D /* GrocereeUITests */,
+				2247CE7F2D299CE500AF1CE6 /* Frameworks */,
 				22DCA3F22CEB6BA30074314D /* Products */,
 			);
 			sourceTree = "<group>";
@@ -112,6 +125,7 @@
 			);
 			name = Groceree;
 			packageProductDependencies = (
+				2247CE802D299CE500AF1CE6 /* asnycImage */,
 			);
 			productName = Groceree;
 			productReference = 22DCA3F12CEB6BA30074314D /* Groceree.app */;
@@ -195,6 +209,9 @@
 			);
 			mainGroup = 22DCA3E82CEB6BA30074314D;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				2247CE7E2D29999500AF1CE6 /* XCRemoteSwiftPackageReference "asyncImage" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 22DCA3F22CEB6BA30074314D /* Products */;
 			projectDirPath = "";
@@ -558,6 +575,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		2247CE7E2D29999500AF1CE6 /* XCRemoteSwiftPackageReference "asyncImage" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/baskurthalit/asyncImage.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.3;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		2247CE802D299CE500AF1CE6 /* asnycImage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2247CE7E2D29999500AF1CE6 /* XCRemoteSwiftPackageReference "asyncImage" */;
+			productName = asnycImage;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 22DCA3E92CEB6BA30074314D /* Project object */;
 }
